@@ -86,6 +86,15 @@ export const SomniaQuizGameABI = [
     stateMutability: "nonpayable",
     type: "function",
   },
+  // === tambahan claimReward ===
+  {
+    inputs: [],
+    name: "claimReward",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  // === events ===
   {
     anonymous: false,
     inputs: [

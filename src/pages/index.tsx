@@ -3,6 +3,7 @@ import { useActiveAccount, useSendTransaction } from "thirdweb/react";
 import { prepareContractCall, toWei } from "thirdweb";
 import { getContract } from "thirdweb";
 import toast from "react-hot-toast";
+
 import {
   ACTIVE_CHAIN,
   THIRDWEB_CLIENT_ID,
@@ -28,9 +29,10 @@ export interface Question {
 const GameSmartContractAddress = FUN_QUIZ_CONTRACT_ADDRESS;
 
 export default function HomePage() {
-  const account = useActiveAccount();
-  const { mutate: sendTransaction, isPending: isTxLoading } =
-    useSendTransaction();
+    const account = useActiveAccount();
+  const signer = useSigner();
+  const contractInstance = useContract(GameSmartContractAddress, SomniaQuizGameABI).contract;
+  const { mutate: sendTransaction, isPending: isTxLoading } = useSendTransaction();
 
   const [gameStarted, setGameStarted] = useState(false);
   const [gameFinished, setGameFinished] = useState(false);
@@ -38,6 +40,7 @@ export default function HomePage() {
   const [questions, setQuestions] = useState<Question[]>([]);
   const [gamePaymentMade, setGamePaymentMade] = useState(false);
   const [isSavingScore, setIsSavingScore] = useState(false);
+  const [isClaimingReward, setIsClaimingReward] = useState(false);
 
   const gameContract = account
     ? getContract({
@@ -112,90 +115,124 @@ export default function HomePage() {
     }
   };
 
-const handleGameEnd = useCallback(
-  async (
-    finalScore: number,
-    questionsCorrect: number,
-    questionsAttempted: number
-  ) => {
-    setGameStarted(false);
-    setGameFinished(true);
-    setCurrentScore(finalScore);
-    setGamePaymentMade(false);
+  const handleGameEnd = useCallback(
+    async (
+      finalScore: number,
+      questionsCorrect: number,
+      questionsAttempted: number
+    ) => {
+      setGameStarted(false);
+      setGameFinished(true);
+      setCurrentScore(finalScore);
+      setGamePaymentMade(false);
 
-    if (!account) {
-      toast.error("Wallet not connected. Cannot save score.");
-      return;
-    }
-    if (questionsAttempted === 0) {
-      toast.error("No questions attempted. Score will not be saved.");
-      return;
-    }
+      if (!account) {
+        toast.error("Wallet not connected. Cannot save score.");
+        return;
+      }
+      if (questionsAttempted === 0) {
+        toast.error("No questions attempted. Score will not be saved.");
+        return;
+      }
 
-    setIsSavingScore(true);
-    toast.loading("Saving your score...", { id: "saveScoreToast" });
+      setIsSavingScore(true);
+      toast.loading("Saving your score...", { id: "saveScoreToast" });
 
-    const maxRetries = 2;
-    let attempt = 0;
-    let saved = false;
+      const maxRetries = 2;
+      let attempt = 0;
+      let saved = false;
 
-    while (attempt <= maxRetries && !saved) {
-      try {
-        const response = await fetch("/api/save-score", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            address: account.address,
-            score: finalScore,
-            questionsCorrect: questionsCorrect,
-            questionsAttempted: questionsAttempted,
-          }),
-        });
-        const data = await response.json();
+      while (attempt <= maxRetries && !saved) {
+        try {
+          const response = await fetch("/api/save-score", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              address: account.address,
+              score: finalScore,
+              questionsCorrect: questionsCorrect,
+              questionsAttempted: questionsAttempted,
+            }),
+          });
+          const data = await response.json();
 
-        if (response.ok) {
-          toast.dismiss("saveScoreToast");
-          toast.success("Score saved successfully!");
-          saved = true;
-        } else {
+          if (response.ok) {
+            toast.dismiss("saveScoreToast");
+            toast.success("Score saved successfully!");
+            saved = true;
+          } else {
+            attempt++;
+            if (attempt > maxRetries) {
+              toast.dismiss("saveScoreToast");
+              console.error("Failed to save score:", data.error);
+              toast.error(
+                `Failed to save score after ${maxRetries + 1} attempts: ${
+                  data.error || "Unknown error"
+                }`
+              );
+            } else {
+              console.warn(
+                `Save score attempt ${attempt} failed, retrying...`,
+                data.error
+              );
+            }
+          }
+        } catch (error: any) {
           attempt++;
           if (attempt > maxRetries) {
             toast.dismiss("saveScoreToast");
-            console.error("Failed to save score:", data.error);
+            console.error("Error calling save-score API:", error);
             toast.error(
-              `Failed to save score after ${maxRetries + 1} attempts: ${
-                data.error || "Unknown error"
-              }`
+              `Error saving score after ${maxRetries + 1} attempts: ${error.message}`
             );
           } else {
             console.warn(
-              `Save score attempt ${attempt} failed, retrying...`,
-              data.error
+              `Save score attempt ${attempt} encountered error, retrying...`,
+              error
             );
           }
         }
-      } catch (error: any) {
-        attempt++;
-        if (attempt > maxRetries) {
-          toast.dismiss("saveScoreToast");
-          console.error("Error calling save-score API:", error);
-          toast.error(
-            `Error saving score after ${maxRetries + 1} attempts: ${error.message}`
-          );
-        } else {
-          console.warn(
-            `Save score attempt ${attempt} encountered error, retrying...`,
-            error
-          );
-        }
       }
+
+      setIsSavingScore(false);
+    },
+    [account, shuffleQuestions]
+  );
+
+  // === Claim Reward Function ===
+  const handleClaimReward = async () => {
+    if (!account || !gameContract) {
+      toast.error("Please connect your wallet first.");
+      return;
     }
 
-    setIsSavingScore(false);
-  },
-  [account, shuffleQuestions]
-);
+    setIsClaimingReward(true);
+    toast.loading("Claiming your reward...", { id: "claimRewardToast" });
 
+    try {
+      const tx = prepareContractCall({
+        contract: gameContract,
+        method: "claimReward",
+        params: [],
+      });
+
+      await sendTransaction(tx as any, {
+        onSuccess: () => {
+          toast.dismiss("claimRewardToast");
+          toast.success("Reward claimed successfully!");
+        },
+        onError: (error) => {
+          toast.dismiss("claimRewardToast");
+          toast.error(`Claim reward failed: ${error.message.slice(0, 50)}...`);
+        },
+      });
+    } catch (error: any) {
+      toast.dismiss("claimRewardToast");
+      toast.error(`Error: ${error.message}`);
+    } finally {
+      setIsClaimingReward(false);
+    }
+  };
 
   const resetGame = () => {
     setGameStarted(false);
@@ -230,6 +267,8 @@ const handleGameEnd = useCallback(
           currentScore={currentScore}
           onResetGame={resetGame}
           isSavingScore={isSavingScore}
+          onClaimReward={handleClaimReward}
+          isClaimingReward={isClaimingReward}
         />
       )}
     </MainLayout>

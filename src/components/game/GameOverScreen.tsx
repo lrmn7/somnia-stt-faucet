@@ -2,13 +2,18 @@ interface GameOverScreenProps {
   currentScore: number;
   onResetGame: () => void;
   isSavingScore: boolean;
+  onClaimReward: () => void;
+  isClaimingReward: boolean;
 }
 
 const GameOverScreen = ({
   currentScore,
   onResetGame,
   isSavingScore,
+  onClaimReward,
+  isClaimingReward,
 }: GameOverScreenProps) => {
+  const isButtonDisabled = isSavingScore || isClaimingReward;
   return (
     <div className="mt-8 p-6 bg-dark-secondary rounded-lg shadow-xl w-full max-w-xl">
       <h2 className="text-3xl font-bold text-dark-accent mb-4">
@@ -33,8 +38,8 @@ const GameOverScreen = ({
       </p>
 
       <button
-        onClick={onResetGame}
-        disabled={isSavingScore}
+onClick={onClaimReward}
+        disabled={isButtonDisabled}
         className="px-6 py-2 bg-dark-accent text-dark-primary font-semibold rounded-lg hover:bg-opacity-80 transition-colors disabled:opacity-50 mr-4"
       >
         {isSavingScore ? "Please Wait..." : "Claim Rewards"}
