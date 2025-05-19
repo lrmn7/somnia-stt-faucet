@@ -19,6 +19,7 @@ client={{
         style: {
           backgroundColor: '#F2AC29', // dark.accent
           color: '#0D0D0D', // dark.primary
+          fontWeight: 'bold',
         }
       }}
     />

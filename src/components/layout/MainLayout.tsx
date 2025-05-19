@@ -37,7 +37,7 @@ const MainLayout = ({
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
-  const isLeaderboardMobile = router.pathname === "/leaderboard" && isMobile;
+  const isLeaderboardMobile =  (router.pathname === "/leaderboard" || router.pathname === "/create-quiz") && isMobile;
 
   return (
     <div className="min-h-screen bg-dark-primary text-dark-text flex flex-col items-center selection:bg-dark-accent selection:text-dark-primary">

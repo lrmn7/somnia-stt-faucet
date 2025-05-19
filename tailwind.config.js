@@ -40,6 +40,7 @@ const config: Config = {
           primary: '#0D0D0D',
           secondary: '#1A1A1A', 
           accent: '#F2AC29',
+          accenthover: '#e29c20',
           text: '#E0E0E0',
           'text-secondary': '#A0A0A0',
         },
@@ -47,6 +48,7 @@ const config: Config = {
           primary: '#FFFFFF',
           secondary: '#F3F4F6',
           accent: '#F2AC29',
+          accenthover: '#e29c20',
           text: '#1F2937',
           'text-secondary': '#6B7280',
         }
