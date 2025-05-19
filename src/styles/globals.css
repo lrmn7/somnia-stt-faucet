@@ -1,0 +1,13 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply bg-dark-primary text-dark-text; /* Default ke dark mode */
+}
+
+/* Anda bisa menambahkan class untuk mode terang jika darkMode: 'class' */
+.light body {
+  @apply bg-light-primary text-light-text;
+}
+
