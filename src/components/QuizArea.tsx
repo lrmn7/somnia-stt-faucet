@@ -293,10 +293,10 @@ export default function QuizArea({
       : 0;
 
   return (
-    <div className="relative w-full max-w-2xl mx-auto p-6 bg-slate-900 shadow-2xl rounded-lg text-white">
+    <div className="relative w-full max-w-2xl mx-auto p-6 bg-dark-secondary shadow-2xl rounded-lg text-white">
       {isLoadingNextQuestion && (
         <div className="absolute inset-0 bg-slate-900/80 backdrop-blur-md flex flex-col items-center justify-center z-50 p-4 sm:p-8 text-center rounded-lg transition-opacity duration-300 ease-in-out">
-          <div className="bg-slate-800 p-6 sm:p-10 rounded-xl shadow-xl transform transition-all duration-300 ease-out scale-100 animate-fadeIn">
+          <div className="bg-dark-secondary p-6 sm:p-10 rounded-xl shadow-xl transform transition-all duration-300 ease-out scale-100 animate-fadeIn">
             <div className="mb-6">
               {countdown > 0 ? (
                 <span className="text-7xl sm:text-8xl font-bold text-dark-accent drop-shadow-lg">
