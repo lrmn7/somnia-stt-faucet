@@ -40,7 +40,7 @@ contract FunQuiz is Ownable {
     event RewardClaimed(address indexed player, uint256 amount);
 
     constructor(address _initialOwner) Ownable(_initialOwner) {
-        // owner sudah otomatis diset ke _initialOwner
+        
     }
 
     function setRewardAmount(uint256 _newAmount) external onlyOwner {
@@ -94,12 +94,12 @@ contract FunQuiz is Ownable {
 
     function claimReward() external {
         require(!hasClaimedReward[msg.sender], "FunQuiz: Reward already claimed.");
-        require(address(this).balance >= rewardAmount, "FunQuiz: Not enough ether in contract.");
+        require(address(this).balance >= rewardAmount, "FunQuiz: Not enough STT in contract.");
 
         hasClaimedReward[msg.sender] = true;
 
         (bool success, ) = msg.sender.call{value: rewardAmount}("");
-        require(success, "FunQuiz: Ether transfer failed.");
+        require(success, "FunQuiz: STT transfer failed.");
 
         emit RewardClaimed(msg.sender, rewardAmount);
     }

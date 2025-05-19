@@ -1,4 +1,4 @@
-export const SomniaQuizGameABI = [
+export const FunQuizABI = [
   {
     inputs: [],
     name: "gameFee",

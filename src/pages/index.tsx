@@ -1,3 +1,4 @@
+// INDEX.TSX
 import { useState, useEffect, useCallback } from "react";
 import { useActiveAccount, useSendTransaction } from "thirdweb/react";
 import { prepareContractCall, toWei } from "thirdweb";
@@ -11,7 +12,7 @@ import {
   THIRDWEB_SECRET_ID,
 } from "@/constants/chain";
 import questionsData from "@/constants/questions.json";
-import { SomniaQuizGameABI } from "@/constants/abi";
+import { FunQuizABI } from "@/constants/fun-quiz-abi";
 
 import MainLayout from "@/components/layout/MainLayout";
 import QuizArea from "@/components/QuizArea";
@@ -29,9 +30,7 @@ export interface Question {
 const GameSmartContractAddress = FUN_QUIZ_CONTRACT_ADDRESS;
 
 export default function HomePage() {
-    const account = useActiveAccount();
-  const signer = useSigner();
-  const contractInstance = useContract(GameSmartContractAddress, SomniaQuizGameABI).contract;
+  const account = useActiveAccount();
   const { mutate: sendTransaction, isPending: isTxLoading } = useSendTransaction();
 
   const [gameStarted, setGameStarted] = useState(false);
@@ -46,11 +45,11 @@ export default function HomePage() {
     ? getContract({
         client: {
           clientId: THIRDWEB_CLIENT_ID,
-          secretKey: " ",
+          secretKey: THIRDWEB_SECRET_ID,
         },
         chain: ACTIVE_CHAIN,
         address: GameSmartContractAddress,
-        abi: SomniaQuizGameABI,
+        abi: FunQuizABI,
       })
     : null;
 
