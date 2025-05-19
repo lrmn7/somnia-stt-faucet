@@ -19,6 +19,7 @@ const GameStartScreen = ({
     null
   );
   const [isCheckingCompletion, setIsCheckingCompletion] = useState(false);
+  const [greeting, setGreeting] = useState("Hello");
 
   useEffect(() => {
     const checkCompletionStatus = async () => {
@@ -52,20 +53,29 @@ const GameStartScreen = ({
     checkCompletionStatus();
   }, [isWalletConnected, walletAddress]);
 
+  useEffect(() => {
+    const hour = new Date().getHours();
+    if (hour < 12) setGreeting("Good Morning");
+    else if (hour < 18) setGreeting("Good Afternoon");
+    else setGreeting("Good Evening");
+  }, []);
+
   const isButtonDisabled =
     isTxLoading ||
     !isWalletConnected ||
     isCheckingCompletion ||
     hasCompletedQuiz === true;
+
   const getButtonText = () => {
     if (isCheckingCompletion) return "Checking Status...";
     if (isTxLoading) return "Processing Payment...";
     if (gamePaymentMade) return "Start Quiz";
     return "Start Quiz";
   };
+
   return (
     <>
-      <h4 className="text-gray-400">gSomnia 💛</h4>
+      <h4 className="text-gray-400">{greeting}, gSomnia 💛</h4>
       <h1 className="text-4xl md:text-6xl font-bold text-dark-accent mb-4">
         Embark On Your Somnia Journey
       </h1>

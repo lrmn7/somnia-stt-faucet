@@ -10,13 +10,12 @@ export default function PageNotFound() {
       </h1>
 
       <p className="text-lg text-dark-text-secondary mb-6">
-        The page you're looking for isn't found :(
-We suggest you back to home
+        The page you&apos;re looking for isn&apos;t found :( We suggest you back to home
       </p>
 
       <div className="w-full max-w-sm mx-auto mb-8">
         <Image
-          src="/rickroll.gif" // Ganti ke .png kalau kamu pakai PNG
+          src="/rickroll.gif"
           alt="404 Not Found"
           width={600}
           height={400}
