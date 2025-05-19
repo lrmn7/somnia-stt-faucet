@@ -1,5 +1,5 @@
-import { MongoClient, Db, ObjectId, WithId } from 'mongodb';
-import type { NextApiRequest, NextApiResponse } from 'next';
+import { MongoClient, Db, ObjectId, WithId } from "mongodb";
+import type { NextApiRequest, NextApiResponse } from "next";
 
 const uri = process.env.NEXT_PUBLIC_MONGODB_URI;
 const dbName = process.env.NEXT_PUBLIC_MONGODB_DB_NAME;
@@ -10,8 +10,8 @@ interface QuizScore {
   score: number;
   questionsCorrect: number;
   questionsAttempted: number;
-  createdAt?: Date; 
-  updatedAt?: Date; 
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 interface LeaderboardEntry {
@@ -32,10 +32,14 @@ async function connectToDatabase() {
   }
 
   if (!uri) {
-    throw new Error('Please define the MONGODB_URI environment variable inside .env.local');
+    throw new Error(
+      "Please define the MONGODB_URI environment variable inside .env.local"
+    );
   }
   if (!dbName) {
-    throw new Error('Please define the MONGODB_DB_NAME environment variable inside .env.local');
+    throw new Error(
+      "Please define the MONGODB_DB_NAME environment variable inside .env.local"
+    );
   }
 
   const client = new MongoClient(uri);
@@ -54,10 +58,10 @@ export default async function handler(
 ) {
   try {
     const { db } = await connectToDatabase();
-    const collection = db.collection<QuizScore>('quizScores');
+    const collection = db.collection<QuizScore>("quizScores");
     const topScores: WithId<QuizScore>[] = await collection
       .find({})
-      .sort({ score: -1 })
+      .sort({ score: -1, createdAt: 1 })
       .limit(20)
       .toArray();
     const result: LeaderboardEntry[] = topScores.map((doc) => ({
@@ -65,13 +69,19 @@ export default async function handler(
       score: doc.score,
       questionsCorrect: doc.questionsCorrect,
       questionsAttempted: doc.questionsAttempted,
-      timestamp: doc.updatedAt ? doc.updatedAt.toISOString() : (doc.createdAt ? doc.createdAt.toISOString() : new Date().toISOString()),
+      timestamp: doc.updatedAt
+        ? doc.updatedAt.toISOString()
+        : doc.createdAt
+        ? doc.createdAt.toISOString()
+        : new Date().toISOString(),
       _id: doc._id.toString(),
     }));
 
     res.status(200).json(result);
   } catch (error: any) {
-    console.error('MongoDB leaderboard fetch error:', error);
-    res.status(500).json({ message: error.message || 'Failed to fetch leaderboard' });
+    console.error("MongoDB leaderboard fetch error:", error);
+    res
+      .status(500)
+      .json({ message: error.message || "Failed to fetch leaderboard" });
   }
 }
