@@ -21,7 +21,7 @@ if (!THIRDWEB_CLIENT_ID && typeof window !== "undefined") {
   );
 }
 
-export const THIRDWEB_SECRET_ID = process.env.THIRDWEB_SECRET_ID || "";
+export const THIRDWEB_SECRET_ID = process.env.NEXT_PUBLIC_THIRDWEB_SECRET_ID || "";
 if (!THIRDWEB_SECRET_ID && typeof window !== "undefined") {
   console.warn(
     "THIRDWEB_SECRET_ID is not set."
@@ -29,7 +29,7 @@ if (!THIRDWEB_SECRET_ID && typeof window !== "undefined") {
 }
 
 
-export const FUN_QUIZ_CONTRACT_ADDRESS = process.env.FUN_QUIZ_CONTRACT_ADDRESS || "";
+export const FUN_QUIZ_CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_FUN_QUIZ_CONTRACT_ADDRESS || "";
 if (!FUN_QUIZ_CONTRACT_ADDRESS && typeof window !== "undefined") {
   console.warn(
     "NEXT_PUBLIC_SMART_CONTRACT_ADDRESS is not set."

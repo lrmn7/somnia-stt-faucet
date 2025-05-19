@@ -13,7 +13,7 @@ import questionsData from "@/constants/questions.json";
 import { SomniaQuizGameABI } from "@/constants/abi";
 
 import MainLayout from "@/components/layout/MainLayout";
-import QuizArea from "@/components/QuizArea"; // Asumsi path ini benar
+import QuizArea from "@/components/QuizArea";
 import GameStartScreen from "@/components/game/GameStartScreen";
 import GameOverScreen from "@/components/game/GameOverScreen";
 
@@ -43,7 +43,7 @@ export default function HomePage() {
     ? getContract({
         client: {
           clientId: THIRDWEB_CLIENT_ID,
-          secretKey: THIRDWEB_SECRET_ID,
+          secretKey: " ",
         },
         chain: ACTIVE_CHAIN,
         address: GameSmartContractAddress,

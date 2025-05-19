@@ -55,9 +55,6 @@ const LeaderboardPage: NextPage<LeaderboardProps> = ({ topScores, error }) => {
                   <th className="px-2 py-2 sm:px-6 sm:py-3 text-center align-middle text-xs sm:text-xs font-medium text-dark-accent uppercase tracking-wider break-words">
                     Score
                   </th>
-                  <th className="px-2 py-2 sm:px-6 sm:py-3 text-center align-middle text-xs sm:text-xs font-medium text-dark-accent uppercase tracking-wider break-words">
-                    Quiz
-                  </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-dark-border">
@@ -77,9 +74,6 @@ const LeaderboardPage: NextPage<LeaderboardProps> = ({ topScores, error }) => {
                     </td>
                     <td className="px-2 py-2 sm:px-6 sm:py-4 text-sm sm:text-base font-bold text-dark-accent text-center align-middle break-words">
                       {entry.score}
-                    </td>
-                    <td className="px-2 py-2 sm:px-6 sm:py-4 text-sm sm:text-base font-bold text-center align-middle break-words">
-                      {entry.questionsCorrect} / {entry.questionsAttempted}
                     </td>
                   </tr>
                 ))}

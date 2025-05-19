@@ -1,0 +1,242 @@
+[
+  {
+    "id": 1,
+    "question": "Who is the CEO and founder of Somnia Network?",
+    "options": [
+      "Vitalik Buterin",
+      "Paul Thomas",
+      "Elon Musk",
+      "Kang Mush"
+    ],
+    "correctAnswer": "Paul Thomas",
+    "points": 100
+  },
+  {
+    "id": 2,
+    "question": "What is the native currency symbol of Somnia Network Testnet?",
+    "options": [
+      "SOM",
+      "SNT",
+      "STT",
+      "SON"
+    ],
+    "correctAnswer": "STT",
+    "points": 100
+  },
+  {
+    "id": 3,
+    "question": "Which NFT project is part of the Somnia Network Ecosystem?",
+    "options": [
+      "Third Web",
+      "Quills",
+      "ANKR",
+      "QSTN"
+    ],
+    "correctAnswer": "Quills",
+    "points": 100
+  },
+    {
+    "id": 4,
+    "question": "Who is currently ranked #1 on the Somnia Testnet leaderboard?",
+    "options": [
+      "dmitrys",
+      "Mush",
+      "GratefulApe",
+      "Kang Asep"
+    ],
+    "correctAnswer": "GratefulApe",
+    "points": 100
+  },
+  {
+    "id": 5,
+    "question": "Which developer platform infrastructure project is part of the Somnia Network Ecosystem?",
+    "options": [
+      "Quills",
+      "QuickSwap",
+      "Salt",
+      "Thirdweb"
+    ],
+    "correctAnswer": "Thirdweb",
+    "points": 100
+  },
+  {
+    "id": 6,
+    "question": "Which Gaming project is part of the Somnia Network Ecosystem?",
+    "options": [
+      "Privy",
+      "Ormi",
+      "COIN98",
+      "Netherak Demons"
+    ],
+    "correctAnswer": "Netherak Demons",
+    "points": 100
+  },
+  {
+    "id": 7,
+    "question": "What is the maximum transaction throughput claimed by the Somnia blockchain?",
+    "options": [
+      "10,000 TPS",
+      "100,000 TPS",
+      "1,000,000 TPS",
+      "500,000 TPS"
+    ],
+    "correctAnswer": "1,000,000 TPS",
+    "points": 100
+  },
+  {
+    "id": 8,
+    "question": "What protocol inspires Somnia's MultiStream consensus mechanism?",
+    "options": [
+      "PBFT",
+      "Autobahn BFT",
+      "Raft",
+      "Tendermint"
+    ],
+    "correctAnswer": "Autobahn BFT",
+    "points": 100
+  },
+    {
+    "id": 9,
+    "question": "Which of the following individuals is part of the Somnia core team?",
+    "options": [
+      "Don't know",
+      "Directive Creator",
+      "Mush",
+      "Elon Musk"
+    ],
+    "correctAnswer": "Mush",
+    "points": 100
+  },
+  {
+    "id": 10,
+    "question": "Which of the following is NOT listed as a use case for Somnia Network?",
+    "options": [
+      "Real-time games",
+      "Metaverses",
+      "IoT networks",
+      "Social apps"
+    ],
+    "correctAnswer": "IoT networks",
+    "points": 100
+  },
+  {
+    "id": 11,
+    "question": "What database innovation does Somnia use to store blockchain state?",
+    "options": [
+      "FastDB",
+      "IceDB",
+      "BlockDB",
+      "HyperStore"
+    ],
+    "correctAnswer": "IceDB",
+    "points": 100
+  },
+  {
+    "id": 12,
+    "question": "Which execution method helps Somnia achieve fast sequential execution?",
+    "options": [
+      "Interpreted JavaScript",
+      "Compiled EVM bytecode",
+      "Solidity Preprocessing",
+      "VM Snapshotting"
+    ],
+    "correctAnswer": "Compiled EVM bytecode",
+    "points": 100
+  },
+    {
+    "id": 13,
+    "question": "Which NFT collection gives the highest point boost (200%) in the Somnia Testnet?",
+    "options": [
+      "Apekin",
+      "BAYC",
+      "Koda",
+      "Grillz Gang"
+    ],
+    "correctAnswer": "Koda",
+    "points": 100
+  },
+  {
+    "id": 14,
+    "question": "What principle emphasizes the ability for builders to build upon each other's work?",
+    "options": [
+      "Composability",
+      "Monolithic Design",
+      "Central Governance",
+      "Tokenomics"
+    ],
+    "correctAnswer": "Composability",
+    "points": 100
+  },
+  {
+    "id": 15,
+    "question": "What is the official website of Somnia Network?",
+    "options": [
+      "https://somnia.io",
+      "https://somnia.network",
+      "https://somnianet.org",
+      "https://somniachain.com"
+    ],
+    "correctAnswer": "https://somnia.network",
+    "points": 100
+  },
+    {
+    "id": 16,
+    "question": "Claude Shannon is widely known as the ________.",
+    "options": [
+      "Father of Blockchain",
+      "Father of Information Theory",
+      "Inventor of the Internet",
+      "Pioneer of Artificial Intelligence"
+    ],
+    "correctAnswer": "Father of Information Theory",
+    "points": 100
+  },
+  {
+    "id": 17,
+    "question": "What is the official documentation page of Somnia Network?",
+    "options": [
+      "https://docs.somnia.network",
+      "https://somnia.network/docs",
+      "https://documentation.somnia.io",
+      "https://wiki.somnia.network"
+    ],
+    "correctAnswer": "https://docs.somnia.network",
+    "points": 100
+  },
+  {
+    "id": 18,
+    "question": "What is the name of Somnia’s Testnet that honors Claude Shannon?",
+    "options": [
+      "SomniaNet",
+      "ClaudeNet",
+      "Shannon",
+      "InfoChain"
+    ],
+    "correctAnswer": "Shannon",
+    "points": 100
+  },
+  {
+    "id": 19,
+    "question": "Which token pair is shown on the Somnia Swap testnet interface?",
+    "options": [
+      "ETH / BTC",
+      "PING / PONG",
+      "STT / SOM",
+      "USDT / STT"
+    ],
+    "correctAnswer": "PING / PONG",
+    "points": 100
+  },
+  {
+    "id": 20,
+    "question": "What is the cap (maximum count) for the Koda boost in the Somnia testnet?",
+    "options": [
+      "1",
+      "10",
+      "25",
+      "50"
+    ],
+    "correctAnswer": "25",
+    "points": 100
+  }
+]
