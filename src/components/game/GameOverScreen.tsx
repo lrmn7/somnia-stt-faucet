@@ -68,7 +68,7 @@ const GameOverScreen = ({
         disabled={isButtonDisabled}
         className="px-6 py-2 bg-dark-accent text-dark-primary font-semibold rounded-lg hover:bg-opacity-80 transition-colors disabled:opacity-50 mr-4"
       >
-        {isSavingScore ? "Please wait..." : "Claim Rewards"}
+        {isSavingScore ? "Please wait..." : "Claim Rewards 1 STT"}
       </button>
     </div>
   );
