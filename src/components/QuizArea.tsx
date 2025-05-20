@@ -12,7 +12,7 @@ interface QuizAreaProps {
   totalQuestions: number;
 }
 
-const TIME_LIMIT_SECONDS = 30;
+const TIME_LIMIT_SECONDS = 10;
 const INTERSTITIAL_COUNTDOWN_SECONDS = 3;
 
 const shuffleQuestions = (array: Question[]): Question[] => {
