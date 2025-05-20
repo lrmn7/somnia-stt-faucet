@@ -8,6 +8,56 @@ export const FunQuizABI = [
   },
   {
     inputs: [],
+    name: "recordFee",
+    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "rewardAmount",
+    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "totalGamesPlayed",
+    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+    name: "gameResults",
+    outputs: [
+      { internalType: "address", name: "player", type: "address" },
+      { internalType: "uint256", name: "score", type: "uint256" },
+      { internalType: "uint256", name: "questionsAttempted", type: "uint256" },
+      { internalType: "uint256", name: "questionsCorrect", type: "uint256" },
+      { internalType: "uint256", name: "timestamp", type: "uint256" },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [{ internalType: "address", name: "", type: "address" }],
+    name: "playerGameHistory",
+    outputs: [{ internalType: "uint256[]", name: "", type: "uint256[]" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "owner",
+    outputs: [{ internalType: "address", name: "", type: "address" }],
+    stateMutability: "view",
+    type: "function",
+  },
+
+  // Functions
+  {
+    inputs: [],
     name: "payToStartGame",
     outputs: [],
     stateMutability: "payable",
@@ -25,44 +75,17 @@ export const FunQuizABI = [
     type: "function",
   },
   {
-    inputs: [{ internalType: "uint256", name: "_gameId", type: "uint256" }],
-    name: "getGameResultById",
-    outputs: [
-      { internalType: "address", name: "player", type: "address" },
-      { internalType: "uint256", name: "score", type: "uint256" },
-      { internalType: "uint256", name: "questionsAttempted", type: "uint256" },
-      { internalType: "uint256", name: "questionsCorrect", type: "uint256" },
-      { internalType: "uint256", name: "timestamp", type: "uint256" },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [{ internalType: "address", name: "_player", type: "address" }],
-    name: "getPlayerGameHistory",
-    outputs: [{ internalType: "uint256[]", name: "", type: "uint256[]" }],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
     inputs: [],
-    name: "getTotalGamesPlayed",
-    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
-    stateMutability: "view",
+    name: "claimReward",
+    outputs: [],
+    stateMutability: "nonpayable",
     type: "function",
   },
   {
-    inputs: [],
-    name: "owner",
-    outputs: [{ internalType: "address", name: "", type: "address" }],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "recordFee",
-    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
-    stateMutability: "view",
+    inputs: [{ internalType: "uint256", name: "_newAmount", type: "uint256" }],
+    name: "setRewardAmount",
+    outputs: [],
+    stateMutability: "nonpayable",
     type: "function",
   },
   {
@@ -81,35 +104,25 @@ export const FunQuizABI = [
   },
   {
     inputs: [],
-    name: "withdraw",
+    name: "withdrawAll",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
   },
-  // === tambahan claimReward ===
   {
-    inputs: [],
-    name: "claimReward",
+    inputs: [{ internalType: "uint256", name: "amount", type: "uint256" }],
+    name: "withdrawPartial",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
   },
-  // === events ===
+
+  // Events
   {
     anonymous: false,
     inputs: [
-      {
-        indexed: true,
-        internalType: "address",
-        name: "player",
-        type: "address",
-      },
-      {
-        indexed: false,
-        internalType: "uint256",
-        name: "timestamp",
-        type: "uint256",
-      },
+      { indexed: true, internalType: "address", name: "player", type: "address" },
+      { indexed: false, internalType: "uint256", name: "timestamp", type: "uint256" },
     ],
     name: "GameStarted",
     type: "event",
@@ -117,44 +130,32 @@ export const FunQuizABI = [
   {
     anonymous: false,
     inputs: [
-      {
-        indexed: true,
-        internalType: "uint256",
-        name: "gameId",
-        type: "uint256",
-      },
-      {
-        indexed: true,
-        internalType: "address",
-        name: "player",
-        type: "address",
-      },
-      {
-        indexed: false,
-        internalType: "uint256",
-        name: "score",
-        type: "uint256",
-      },
-      {
-        indexed: false,
-        internalType: "uint256",
-        name: "questionsCorrect",
-        type: "uint256",
-      },
-      {
-        indexed: false,
-        internalType: "uint256",
-        name: "questionsAttempted",
-        type: "uint256",
-      },
-      {
-        indexed: false,
-        internalType: "uint256",
-        name: "timestamp",
-        type: "uint256",
-      },
+      { indexed: true, internalType: "uint256", name: "gameId", type: "uint256" },
+      { indexed: true, internalType: "address", name: "player", type: "address" },
+      { indexed: false, internalType: "uint256", name: "score", type: "uint256" },
+      { indexed: false, internalType: "uint256", name: "questionsCorrect", type: "uint256" },
+      { indexed: false, internalType: "uint256", name: "questionsAttempted", type: "uint256" },
+      { indexed: false, internalType: "uint256", name: "timestamp", type: "uint256" },
     ],
     name: "GameResultRecorded",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      { indexed: true, internalType: "address", name: "player", type: "address" },
+      { indexed: false, internalType: "uint256", name: "amount", type: "uint256" },
+    ],
+    name: "RewardClaimed",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      { indexed: true, internalType: "address", name: "owner", type: "address" },
+      { indexed: false, internalType: "uint256", name: "amount", type: "uint256" },
+    ],
+    name: "Withdrawn",
     type: "event",
   },
 ] as const;

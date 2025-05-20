@@ -8,7 +8,7 @@ import {
 import { FunQuizABI } from "@/constants/fun-quiz-abi";
 const GameSmartContractAddress = FUN_QUIZ_CONTRACT_ADDRESS;
 
-export default function CreateQuizAdminPage() {
+export default function AdminPage() {
   const [account, setAccount] = useState<string | null>(null);
   const [provider, setProvider] = useState<ethers.providers.Web3Provider | null>(null);
   const [signer, setSigner] = useState<ethers.Signer | null>(null);
@@ -23,12 +23,14 @@ export default function CreateQuizAdminPage() {
   const isFormDisabled = loading || !signer || !contract;
 
   const connectWallet = async () => {
+    // @ts-ignore
     if (!window.ethereum) {
       toast.error("Please install MetaMask!");
       return;
     }
 
     try {
+          // @ts-ignore
       const ethProvider = new ethers.providers.Web3Provider(window.ethereum);
       await ethProvider.send("eth_requestAccounts", []);
       const signer = ethProvider.getSigner();
@@ -81,7 +83,8 @@ export default function CreateQuizAdminPage() {
     setLoading(true);
     toast.loading("Withdrawing tokens...");
     try {
-      const tx = await contract.withdraw(ethers.utils.parseEther(withdrawAmount));
+      const tx = await contract.withdrawPartial(ethers.utils.parseEther(withdrawAmount));
+
       await tx.wait();
 
       toast.dismiss();

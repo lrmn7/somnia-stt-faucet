@@ -35,6 +35,7 @@ contract FunQuiz is Ownable {
         uint256 timestamp
     );
     event RewardClaimed(address indexed player, uint256 amount);
+    event Withdrawn(address indexed owner, uint256 amount);
 
     constructor(address _initialOwner) Ownable(_initialOwner) {}
 
@@ -96,12 +97,26 @@ contract FunQuiz is Ownable {
         emit RewardClaimed(msg.sender, rewardAmount);
     }
 
-    function withdraw() external onlyOwner {
+    /// @notice Withdraw entire balance to owner
+    function withdrawAll() external onlyOwner {
         uint256 balance = address(this).balance;
         require(balance > 0, "FunQuiz: No balance to withdraw.");
 
         (bool success, ) = owner().call{value: balance}("");
         require(success, "FunQuiz: Withdraw failed.");
+
+        emit Withdrawn(owner(), balance);
+    }
+
+    /// @notice Withdraw specific amount to owner
+    function withdrawPartial(uint256 amount) external onlyOwner {
+        require(amount > 0, "FunQuiz: Amount must be greater than 0");
+        require(address(this).balance >= amount, "FunQuiz: Insufficient contract balance");
+
+        (bool success, ) = owner().call{value: amount}("");
+        require(success, "FunQuiz: Partial withdraw failed.");
+
+        emit Withdrawn(owner(), amount);
     }
 
     receive() external payable {}

@@ -22,5 +22,17 @@
     ],
     "correctAnswer": "STT",
     "points": 100
+  },
+  {
+    "id": 3,
+    "question": "Which NFT project is part of the Somnia Network Ecosystem?",
+    "options": [
+      "Third Web",
+      "Quills",
+      "ANKR",
+      "QSTN"
+    ],
+    "correctAnswer": "Quills",
+    "points": 100
   }
 ]
