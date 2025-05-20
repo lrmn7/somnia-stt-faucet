@@ -68,7 +68,7 @@ const GameStartScreen = ({
 
   const getButtonText = () => {
     if (isCheckingCompletion) return "Checking Status...";
-    if (isTxLoading) return "Processing Payment...";
+    if (isTxLoading) return "Starting Quiz...";
     if (gamePaymentMade) return "Start Quiz";
     return "Start Quiz";
   };

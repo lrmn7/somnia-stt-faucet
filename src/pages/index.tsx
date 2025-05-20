@@ -71,7 +71,7 @@ export default function HomePage() {
       return;
     }
     if (gamePaymentMade) {
-      toast.success("Payment already made for this session. Starting game...");
+      toast.success("Payment already made for this session. Starting quiz...");
       setGameStarted(true);
       setGameFinished(false);
       setCurrentScore(0);
@@ -79,7 +79,7 @@ export default function HomePage() {
       return;
     }
 
-    toast.loading("Processing payment to start game...", {
+    toast.loading("Processing payment to start quiz...", {
       id: "paymentToast",
     });
     try {
