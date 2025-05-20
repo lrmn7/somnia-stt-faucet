@@ -74,14 +74,10 @@ export default function QuizArea({
       return;
     }
 
-    // Ditambahkan: Kondisi jika semua pertanyaan sudah dikuasai tetapi totalQuestions belum tercapai (misal, ada penambahan pertanyaan baru di server tapi belum diambil client)
-    // atau jika tidak ada pertanyaan sama sekali untuk memulai.
     if (questions.length > 0 && questionsNotYetMastered.length === 0) {
       setNoNewQuestionsAvailable(true);
       setAvailableQuestionsThisSession([]);
       setInitialSessionQuestionCount(0);
-      // Pertimbangkan untuk memanggil onGameEnd di sini jika game tidak bisa dimulai
-      // onGameEnd(score, questionsCorrectThisSessionCount, questionsAttemptedThisSessionCount);
       return;
     }
 
@@ -90,7 +86,6 @@ export default function QuizArea({
     setAvailableQuestionsThisSession(shuffledSessionQuestions);
     setInitialSessionQuestionCount(shuffledSessionQuestions.length);
 
-    // Reset state untuk sesi baru
     setCurrentQuestionIndex(0);
     setScore(0);
     setTimeLeft(TIME_LIMIT_SECONDS);
@@ -100,11 +95,7 @@ export default function QuizArea({
     setQuestionsAttemptedThisSessionCount(0);
     setQuestionsCorrectThisSessionCount(0);
     setIsLoadingNextQuestion(false);
-    // Reset correctlyAnsweredIds HANYA jika Anda ingin "mastery" direset per sesi game total,
-    // bukan per pemanggilan komponen QuizArea. Jika mastery bersifat persisten lintas sesi game, JANGAN reset di sini.
-    // Untuk skenario mastery antar sesi, `correctlyAnsweredIds` sebaiknya dikelola di level yang lebih tinggi atau dari props.
-    // Jika tidak, setCorrectlyAnsweredIds(new Set<number>()); // Contoh jika ingin reset mastery per sesi
-  }, [questions, totalQuestions]); // correctlyAnsweredIds dihapus dari dependency jika tidak ingin reset saat itu berubah
+  }, [questions, totalQuestions]);
 
   useEffect(() => {
     if (
@@ -123,7 +114,7 @@ export default function QuizArea({
       setQuestionsAttemptedThisSessionCount(updatedAttemptCount);
       setPointsFromLastQuestion(0);
       setShowFeedback(true);
-      setAnsweredCorrectly(false); // Waktu habis, jawaban salah (atau tidak dijawab)
+      setAnsweredCorrectly(false); 
 
       if (feedbackTimeoutRef.current) clearTimeout(feedbackTimeoutRef.current);
       feedbackTimeoutRef.current = setTimeout(() => {
@@ -133,9 +124,9 @@ export default function QuizArea({
 
         if (isLastQuestionOfSession) {
           onGameEnd(
-            score, // Skor tidak bertambah karena waktu habis
-            questionsCorrectThisSessionCount, // Jumlah benar tidak bertambah
-            updatedAttemptCount // Gunakan jumlah percobaan yang sudah diupdate
+            score,
+            questionsCorrectThisSessionCount,
+            updatedAttemptCount
           );
         } else {
           setIsLoadingNextQuestion(true);
@@ -156,13 +147,12 @@ export default function QuizArea({
     showFeedback,
     isLoadingNextQuestion,
     noNewQuestionsAvailable,
-    score, // perlu disertakan jika onGameEnd dipanggil dari sini dan menggunakan score
-    questionsCorrectThisSessionCount, // perlu disertakan jika onGameEnd dipanggil dari sini
-    questionsAttemptedThisSessionCount, // perlu disertakan jika onGameEnd dipanggil dari sini
+    score,
+    questionsCorrectThisSessionCount,
+    questionsAttemptedThisSessionCount,
     availableQuestionsThisSession.length,
     currentQuestionIndex,
     onGameEnd,
-    // selectedAnswer dihapus karena tidak relevan langsung dengan timer utama, lebih ke logic timeout
   ]);
 
   useEffect(() => {
@@ -185,7 +175,7 @@ export default function QuizArea({
         clearInterval(countdownIntervalRef.current);
       }
     };
-  }, [isLoadingNextQuestion, countdown]); // handleNextQuestionLogic ditambahkan jika didefinisikan di luar dan berubah
+  }, [isLoadingNextQuestion, countdown]);
 
   const handleAnswer = (answer: string) => {
     if (
@@ -199,11 +189,9 @@ export default function QuizArea({
     setSelectedAnswer(answer);
     setShowFeedback(true);
 
-    // --- PERBAIKAN DIMULAI DI SINI ---
     let finalScore = score;
     let finalCorrectCount = questionsCorrectThisSessionCount;
     const finalAttemptCount = questionsAttemptedThisSessionCount + 1;
-    // --- PERBAIKAN SELESAI DI SINI ---
 
     setQuestionsAttemptedThisSessionCount(finalAttemptCount);
 
@@ -216,13 +204,13 @@ export default function QuizArea({
         10,
         Math.round(currentQuestion.points * (timeLeft / TIME_LIMIT_SECONDS))
       );
-      finalScore += pointsEarned; // Update variabel lokal
-      setScore(finalScore); // Update state
+      finalScore += pointsEarned;
+      setScore(finalScore);
 
       setCorrectlyAnsweredIds((prev) => new Set(prev).add(currentQuestion.id));
 
-      finalCorrectCount += 1; // Update variabel lokal
-      setQuestionsCorrectThisSessionCount(finalCorrectCount); // Update state
+      finalCorrectCount += 1; 
+      setQuestionsCorrectThisSessionCount(finalCorrectCount);
       toast.success(`Nice! +${pointsEarned} points`, { duration: 1500 });
     } else {
       toast.error("Wrong answer.", { duration: 1500 });
@@ -231,15 +219,14 @@ export default function QuizArea({
 
     if (feedbackTimeoutRef.current) clearTimeout(feedbackTimeoutRef.current);
     feedbackTimeoutRef.current = setTimeout(() => {
-      setShowFeedback(false); // Sembunyikan feedback sebelum pindah atau selesai
-      setSelectedAnswer(null); // Reset selected answer untuk pertanyaan berikutnya atau akhir game
-      setAnsweredCorrectly(null); // Reset status jawaban
+      setShowFeedback(false);
+      setSelectedAnswer(null);
+      setAnsweredCorrectly(null);
 
       const isLastQuestionOfSession =
         currentQuestionIndex + 1 >= availableQuestionsThisSession.length;
 
       if (isLastQuestionOfSession) {
-        // Gunakan variabel lokal yang sudah diupdate untuk onGameEnd
         onGameEnd(finalScore, finalCorrectCount, finalAttemptCount);
       } else {
         setIsLoadingNextQuestion(true);
@@ -249,24 +236,14 @@ export default function QuizArea({
   };
 
   const handleNextQuestionLogic = () => {
-    // setSelectedAnswer(null); // Sudah dihandle di timeout handleAnswer
-    // setAnsweredCorrectly(null); // Sudah dihandle di timeout handleAnswer
     setTimeLeft(TIME_LIMIT_SECONDS);
     setPointsFromLastQuestion(null);
-    // setIsLoadingNextQuestion(false); // Diatur oleh useEffect countdown
 
     const nextIdx = currentQuestionIndex + 1;
     if (nextIdx >= availableQuestionsThisSession.length) {
-      // Kondisi ini seharusnya sudah ditangani oleh `isLastQuestionOfSession` di `handleAnswer` atau `useEffect timeLeft`
-      // Namun, sebagai fallback, jika terpanggil di sini:
       if (correctlyAnsweredIds.size === totalQuestions && totalQuestions > 0) {
         setNoNewQuestionsAvailable(true);
       }
-      // Pastikan onGameEnd tidak dipanggil dua kali.
-      // Panggilan onGameEnd utama ada di handleAnswer dan useEffect timeLeft.
-      // Jika sampai sini, artinya sesi telah berakhir melalui salah satu dari itu.
-      // Atau, jika availableQuestionsThisSession.length === 0 di awal, game juga berakhir.
-      // console.warn("handleNextQuestionLogic called at end of session, onGameEnd should have been called already.");
     } else {
       setCurrentQuestionIndex(nextIdx);
     }
@@ -312,14 +289,9 @@ export default function QuizArea({
       noNewQuestionsAvailable &&
       correctlyAnsweredIds.size === totalQuestions &&
       totalQuestions > 0
-    ) // Bukan kondisi "semua dikuasai"
+    ) 
   ) {
-    // Jika tidak ada pertanyaan tersedia untuk sesi ini dan bukan karena semua sudah dikuasai
-    // Ini bisa terjadi jika initialSessionQuestionCount adalah 0 di awal.
     if (initialSessionQuestionCount === 0 && !noNewQuestionsAvailable) {
-      // Jika game belum dimulai dan memang tidak ada pertanyaan yang bisa dimainkan (misal filter membuat kosong)
-      // Mungkin panggil onGameEnd di sini untuk memberitahu parent bahwa sesi tidak bisa dilanjutkan/dimulai
-      // setTimeout(() => onGameEnd(score, questionsCorrectThisSessionCount, questionsAttemptedThisSessionCount), 0);
       return (
         <div className="text-center p-10 bg-gray-800 rounded-lg shadow-xl">
           <h2 className="text-3xl font-bold text-yellow-400 mb-4">
@@ -409,12 +381,12 @@ export default function QuizArea({
               <span>
                 Question{" "}
                 {Math.min(
-                  questionsAttemptedThisSessionCount + 1, // Pertanyaan saat ini
+                  questionsAttemptedThisSessionCount + 1,
                   initialSessionQuestionCount
                 )}{" "}
                 of {initialSessionQuestionCount}
               </span>
-              {!showFeedback && ( // Tampilkan timer hanya jika feedback tidak aktif
+              {!showFeedback && (
                 <div className="text-dark-accent font-bold text-lg w-12 h-12 rounded-full flex items-center justify-center shadow-lg border-2 border-slate-900 bg-dark-accent text-white">
                   {timeLeft}s
                 </div>
@@ -465,10 +437,10 @@ export default function QuizArea({
                   key={index}
                   onClick={() => handleAnswer(option)}
                   disabled={
-                    selectedAnswer !== null || // Sudah memilih jawaban
-                    timeLeft === 0 || // Waktu habis
-                    showFeedback || // Sedang menunjukkan feedback
-                    isLoadingNextQuestion // Sedang memuat pertanyaan berikutnya
+                    selectedAnswer !== null ||
+                    timeLeft === 0 || 
+                    showFeedback ||
+                    isLoadingNextQuestion
                   }
                   className={buttonClass}
                 >
