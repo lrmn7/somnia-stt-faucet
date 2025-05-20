@@ -2,9 +2,14 @@
 import { MongoClient } from 'mongodb';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-// Ganti dengan variabel lingkungan Anda
 const uri = process.env.NEXT_PUBLIC_MONGODB_URI;
 const dbName = process.env.NEXT_PUBLIC_MONGODB_DB_NAME;
+
+// Ambil daftar wallet owner, dipisahkan dengan koma di .env
+const ownerWallets = (process.env.NEXT_PUBLIC_OWNER_WALLETS || '')
+  .toLowerCase()
+  .split(',')
+  .map(addr => addr.trim());
 
 let cachedClient: MongoClient | null = null;
 let cachedDb: any | null = null;
@@ -18,9 +23,8 @@ async function connectToDatabase() {
     throw new Error('Please define the MONGODB_URI environment variable inside .env.local');
   }
   if (!dbName) {
-     throw new Error('Please define the MONGODB_DB_NAME environment variable inside .env.local');
+    throw new Error('Please define the MONGODB_DB_NAME environment variable inside .env.local');
   }
-
 
   const client = new MongoClient(uri);
   await client.connect();
@@ -42,25 +46,34 @@ export default async function handler(
   }
 
   const { address, score, questionsCorrect, questionsAttempted } = req.body;
+
   if (!address || typeof score !== 'number' || typeof questionsCorrect !== 'number' || typeof questionsAttempted !== 'number') {
     return res.status(400).json({ error: 'Missing or invalid required fields' });
+  }
+
+  const addressLower = address.toLowerCase();
+
+  // ✅ Skip penyimpanan jika wallet adalah milik owner
+  if (ownerWallets.includes(addressLower)) {
+    console.log(`[SKIP SAVE] Wallet ${addressLower} adalah wallet owner (testing mode)`);
+    return res.status(200).json({ message: 'Owner wallet - skipping DB save for testing.' });
   }
 
   try {
     const { db } = await connectToDatabase();
     const collection = db.collection('quizScores');
-    const existingScore = await collection.findOne({ address: address.toLowerCase() });
+    const existingScore = await collection.findOne({ address: addressLower });
 
     let result;
     if (existingScore) {
       if (score > existingScore.score) {
         result = await collection.updateOne(
-          { address: address.toLowerCase() },
+          { address: addressLower },
           {
             $set: {
-              score: score,
-              questionsCorrect: questionsCorrect,
-              questionsAttempted: questionsAttempted,
+              score,
+              questionsCorrect,
+              questionsAttempted,
               updatedAt: new Date(),
             }
           }
@@ -71,10 +84,10 @@ export default async function handler(
       }
     } else {
       result = await collection.insertOne({
-        address: address.toLowerCase(),
-        score: score,
-        questionsCorrect: questionsCorrect,
-        questionsAttempted: questionsAttempted,
+        address: addressLower,
+        score,
+        questionsCorrect,
+        questionsAttempted,
         createdAt: new Date(),
         updatedAt: new Date(),
       });

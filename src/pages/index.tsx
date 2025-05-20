@@ -40,6 +40,8 @@ export default function HomePage() {
   const [gamePaymentMade, setGamePaymentMade] = useState(false);
   const [isSavingScore, setIsSavingScore] = useState(false);
   const [isClaimingReward, setIsClaimingReward] = useState(false);
+  const [hasClaimedReward, setHasClaimedReward] = useState(false);
+
 
   const gameContract = account
     ? getContract({
@@ -81,7 +83,7 @@ export default function HomePage() {
       id: "paymentToast",
     });
     try {
-      const fee = toWei("0.001");
+      const fee = toWei("0.01");
       const transaction = prepareContractCall({
         contract: gameContract,
         method: "payToStartGame",
@@ -199,39 +201,42 @@ export default function HomePage() {
   );
 
   // === Claim Reward Function ===
-  const handleClaimReward = async () => {
-    if (!account || !gameContract) {
-      toast.error("Please connect your wallet first.");
-      return;
-    }
+const handleClaimReward = async () => {
+  if (!account || !gameContract) {
+    toast.error("Please connect your wallet first.");
+    return;
+  }
 
-    setIsClaimingReward(true);
-    toast.loading("Claiming your reward...", { id: "claimRewardToast" });
+  setIsClaimingReward(true);
+  toast.loading("Claiming your reward...", { id: "claimRewardToast" });
 
-    try {
-      const tx = prepareContractCall({
-        contract: gameContract,
-        method: "claimReward",
-        params: [],
-      });
+  try {
+    const tx = prepareContractCall({
+      contract: gameContract,
+      method: "claimReward",
+      params: [],
+    });
 
-      await sendTransaction(tx as any, {
-        onSuccess: () => {
-          toast.dismiss("claimRewardToast");
-          toast.success("Reward claimed successfully!");
-        },
-        onError: (error) => {
-          toast.dismiss("claimRewardToast");
-          toast.error(`Claim reward failed: ${error.message.slice(0, 50)}...`);
-        },
-      });
-    } catch (error: any) {
-      toast.dismiss("claimRewardToast");
-      toast.error(`Error: ${error.message}`);
-    } finally {
-      setIsClaimingReward(false);
-    }
-  };
+    await sendTransaction(tx as any, {
+      onSuccess: () => {
+        toast.dismiss("claimRewardToast");
+        toast.success("Reward claimed successfully!");
+        setHasClaimedReward(true);
+        setIsClaimingReward(false); // transaksi berhasil, tombol aktif lagi tapi sudah claimed
+      },
+      onError: (error) => {
+        toast.dismiss("claimRewardToast");
+        toast.error(`Claim reward failed: ${error.message.slice(0, 50)}...`);
+        setIsClaimingReward(false); // transaksi gagal/error, tombol diaktifkan supaya user bisa coba lagi
+      },
+    });
+  } catch (error: any) {
+    toast.dismiss("claimRewardToast");
+    toast.error(`Error: ${error.message}`);
+    setIsClaimingReward(false); // error di prepare transaction, tombol diaktifkan
+  }
+};
+
 
   const resetGame = () => {
     setGameStarted(false);
@@ -268,6 +273,7 @@ export default function HomePage() {
           isSavingScore={isSavingScore}
           onClaimReward={handleClaimReward}
           isClaimingReward={isClaimingReward}
+          hasClaimedReward={hasClaimedReward}
         />
       )}
     </MainLayout>

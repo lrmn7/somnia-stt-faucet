@@ -15,17 +15,15 @@ contract FunQuiz is Ownable {
         uint256 timestamp;
     }
 
-    uint256 public gameFee = 0.001 ether;
+    uint256 public gameFee = 0.01 ether;
     uint256 public recordFee = 0.0001 ether;
-    uint256 public rewardAmount = 1 ether;
+    uint256 public rewardAmount = 0.5 ether;
 
     Counters.Counter private _gameResultIds;
     mapping(uint256 => GameResult) public gameResults;
     mapping(address => uint256[]) public playerGameHistory;
 
     uint256 public totalGamesPlayed;
-
-    mapping(address => bool) public hasClaimedReward;
 
     event GameStarted(address indexed player, uint256 timestamp);
     event GameResultRecorded(
@@ -36,26 +34,23 @@ contract FunQuiz is Ownable {
         uint256 questionsAttempted,
         uint256 timestamp
     );
-
     event RewardClaimed(address indexed player, uint256 amount);
 
-    constructor(address _initialOwner) Ownable(_initialOwner) {
-        
-    }
+    constructor(address _initialOwner) Ownable(_initialOwner) {}
 
     function setRewardAmount(uint256 _newAmount) external onlyOwner {
         rewardAmount = _newAmount;
     }
 
-    function setGameFee(uint256 _newFee) public onlyOwner {
+    function setGameFee(uint256 _newFee) external onlyOwner {
         gameFee = _newFee;
     }
 
-    function setRecordFee(uint256 _newFee) public onlyOwner {
+    function setRecordFee(uint256 _newFee) external onlyOwner {
         recordFee = _newFee;
     }
 
-    function payToStartGame() public payable {
+    function payToStartGame() external payable {
         require(msg.value == gameFee, "FunQuiz: Incorrect game fee.");
         emit GameStarted(msg.sender, block.timestamp);
     }
@@ -64,7 +59,7 @@ contract FunQuiz is Ownable {
         uint256 _score,
         uint256 _questionsCorrect,
         uint256 _questionsAttempted
-    ) public payable {
+    ) external payable {
         require(msg.value == recordFee, "FunQuiz: Incorrect record fee.");
         require(_questionsAttempted > 0, "FunQuiz: Must attempt at least one question.");
 
@@ -93,10 +88,7 @@ contract FunQuiz is Ownable {
     }
 
     function claimReward() external {
-        require(!hasClaimedReward[msg.sender], "FunQuiz: Reward already claimed.");
         require(address(this).balance >= rewardAmount, "FunQuiz: Not enough STT in contract.");
-
-        hasClaimedReward[msg.sender] = true;
 
         (bool success, ) = msg.sender.call{value: rewardAmount}("");
         require(success, "FunQuiz: STT transfer failed.");
@@ -104,9 +96,10 @@ contract FunQuiz is Ownable {
         emit RewardClaimed(msg.sender, rewardAmount);
     }
 
-    function withdraw() public onlyOwner {
+    function withdraw() external onlyOwner {
         uint256 balance = address(this).balance;
         require(balance > 0, "FunQuiz: No balance to withdraw.");
+
         (bool success, ) = owner().call{value: balance}("");
         require(success, "FunQuiz: Withdraw failed.");
     }
