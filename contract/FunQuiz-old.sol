@@ -4,7 +4,7 @@ pragma solidity ^0.8.20;
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract SomniaQuizGame is Ownable {
+contract FunQuiz is Ownable {
     using Counters for Counters.Counter;
 
     struct GameResult {
@@ -15,8 +15,9 @@ contract SomniaQuizGame is Ownable {
         uint256 timestamp;
     }
 
-    uint256 public gameFee = 0.001 ether;
+    uint256 public gameFee = 0.01 ether;
     uint256 public recordFee = 0.0001 ether;
+    uint256 public rewardAmount = 1 ether;
 
     Counters.Counter private _gameResultIds;
     mapping(uint256 => GameResult) public gameResults;
@@ -33,19 +34,26 @@ contract SomniaQuizGame is Ownable {
         uint256 questionsAttempted,
         uint256 timestamp
     );
+    event RewardClaimed(address indexed player, uint256 amount);
+    event Withdrawn(address indexed owner, uint256 amount);
 
-    constructor() Ownable(msg.sender) {}
+    constructor() Ownable() {}
 
-    function setGameFee(uint256 _newFee) public onlyOwner {
+
+    function setRewardAmount(uint256 _newAmount) external onlyOwner {
+        rewardAmount = _newAmount;
+    }
+
+    function setGameFee(uint256 _newFee) external onlyOwner {
         gameFee = _newFee;
     }
 
-    function setRecordFee(uint256 _newFee) public onlyOwner {
+    function setRecordFee(uint256 _newFee) external onlyOwner {
         recordFee = _newFee;
     }
 
-    function payToStartGame() public payable {
-        require(msg.value == gameFee, "SomniaQuizGame: Incorrect game fee.");
+    function payToStartGame() external payable {
+        require(msg.value == gameFee, "FunQuiz: Incorrect game fee.");
         emit GameStarted(msg.sender, block.timestamp);
     }
 
@@ -53,9 +61,9 @@ contract SomniaQuizGame is Ownable {
         uint256 _score,
         uint256 _questionsCorrect,
         uint256 _questionsAttempted
-    ) public payable {
-        require(msg.value == recordFee, "SomniaQuizGame: Incorrect record fee.");
-        require(_questionsAttempted > 0, "SomniaQuizGame: Must attempt at least one question.");
+    ) external payable {
+        require(msg.value == recordFee, "FunQuiz: Incorrect record fee.");
+        require(_questionsAttempted > 0, "FunQuiz: Must attempt at least one question.");
 
         _gameResultIds.increment();
         uint256 newGameId = _gameResultIds.current();
@@ -81,37 +89,35 @@ contract SomniaQuizGame is Ownable {
         );
     }
 
-    function getGameResultById(uint256 _gameId) public view returns (
-        address player,
-        uint256 score,
-        uint256 questionsAttempted,
-        uint256 questionsCorrect,
-        uint256 timestamp
-    ) {
-        require(_gameId > 0 && _gameId <= _gameResultIds.current(), "SomniaQuizGame: Invalid game ID.");
-        GameResult memory result = gameResults[_gameId];
-        return (
-            result.player,
-            result.score,
-            result.questionsAttempted,
-            result.questionsCorrect,
-            result.timestamp
-        );
+    function claimReward() external {
+        require(address(this).balance >= rewardAmount, "FunQuiz: Not enough STT in contract.");
+
+        (bool success, ) = msg.sender.call{value: rewardAmount}("");
+        require(success, "FunQuiz: STT transfer failed.");
+
+        emit RewardClaimed(msg.sender, rewardAmount);
     }
 
-    function getPlayerGameHistory(address _player) public view returns (uint256[] memory) {
-        return playerGameHistory[_player];
-    }
-
-    function getTotalGamesPlayed() public view returns (uint256) {
-        return totalGamesPlayed;
-    }
-
-    function withdraw() public onlyOwner {
+    /// @notice Withdraw entire balance to owner
+    function withdrawAll() external onlyOwner {
         uint256 balance = address(this).balance;
-        require(balance > 0, "SomniaQuizGame: No balance to withdraw.");
+        require(balance > 0, "FunQuiz: No balance to withdraw.");
+
         (bool success, ) = owner().call{value: balance}("");
-        require(success, "SomniaQuizGame: Transfer failed.");
+        require(success, "FunQuiz: Withdraw failed.");
+
+        emit Withdrawn(owner(), balance);
+    }
+
+    /// @notice Withdraw specific amount to owner
+    function withdrawPartial(uint256 amount) external onlyOwner {
+        require(amount > 0, "FunQuiz: Amount must be greater than 0");
+        require(address(this).balance >= amount, "FunQuiz: Insufficient contract balance");
+
+        (bool success, ) = owner().call{value: amount}("");
+        require(success, "FunQuiz: Partial withdraw failed.");
+
+        emit Withdrawn(owner(), amount);
     }
 
     receive() external payable {}
