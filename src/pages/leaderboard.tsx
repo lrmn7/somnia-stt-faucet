@@ -28,8 +28,11 @@ const LeaderboardPage: NextPage<LeaderboardProps> = ({ topScores, error }) => {
     `${address.slice(0, 6)}...${address.slice(-4)}`;
 
   return (
-    <MainLayout>
-      <h1 className="text-4xl md:text-6xl font-bold text-dark-accent mb-8">
+    <MainLayout
+      pageTitle="Leaderboard - Somnia Legends"
+      pageDescription="Embark On Your Somnia Journey!"
+    >
+      <h1 className="text-4xl md:text-6xl font-bold text-dark-accent mb-6">
         Somnia Legends
       </h1>
 

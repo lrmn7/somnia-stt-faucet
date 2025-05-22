@@ -35,7 +35,14 @@ const MainLayout = ({
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
-  const isLeaderboardMobile =  (router.pathname === "/leaderboard" || router.pathname === "/create-quiz") && isMobile;
+  const paddingTopClass =
+    router.pathname === "/leaderboard" || router.pathname === "/create-quiz"
+      ? "pt-40" 
+      : "pt-20";
+
+  const isLeaderboardMobile =
+    (router.pathname === "/leaderboard" || router.pathname === "/create-quiz") &&
+    isMobile;
 
   return (
     <div className="min-h-screen bg-dark-primary text-dark-text flex flex-col items-center selection:bg-dark-accent selection:text-dark-primary">
@@ -61,7 +68,9 @@ const MainLayout = ({
       <Loader>FUN QUIZ</Loader>
       <Navbar />
       {!isLeaderboardMobile && <SocialLinks />}
-      <main className="flex flex-col items-center justify-center w-full flex-1 px-4 md:px-20 text-center pt-20 pb-10">
+      <main
+        className={`flex flex-col items-center justify-center w-full flex-1 px-4 md:px-20 text-center ${paddingTopClass} pb-10`}
+      >
         {children}
       </main>
       <Footer />
