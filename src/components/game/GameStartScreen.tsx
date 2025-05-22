@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-
+import AudioPlayer from '@/components/AudioPlayer';
 interface GameStartScreenProps {
   onStartPayment: () => void;
   isTxLoading: boolean;
@@ -75,6 +75,7 @@ const GameStartScreen = ({
 
   return (
     <>
+     <AudioPlayer />
       <h4 className="text-gray-400">{greeting}, gSomnia 💛</h4>
       <h1 className="text-4xl md:text-6xl font-bold text-dark-accent mb-4">
         Embark On Your Somnia Journey
