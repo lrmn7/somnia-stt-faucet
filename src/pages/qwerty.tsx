@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react"; // Impor useEffect
 import { ethers } from "ethers";
 import MainLayout from "@/components/layout/MainLayout";
 import toast from "react-hot-toast";
@@ -16,11 +16,34 @@ export default function AdminPage() {
 
   const [transferAmount, setTransferAmount] = useState("");
   const [withdrawAmount, setWithdrawAmount] = useState("");
+  const [contractBalance, setContractBalance] = useState<string | null>(null); // State baru untuk saldo kontrak
 
   const [loading, setLoading] = useState(false);
 
   const isWalletConnected = Boolean(account);
   const isFormDisabled = loading || !signer || !contract;
+
+  // Fungsi untuk mengambil dan mengatur saldo kontrak
+  const fetchContractBalance = async (currentProvider?: ethers.providers.Web3Provider) => {
+    const web3Provider = currentProvider || provider; // Gunakan provider yang baru atau yang sudah ada di state
+    if (web3Provider && GameSmartContractAddress) {
+      try {
+        const balanceBigNumber = await web3Provider.getBalance(GameSmartContractAddress);
+        setContractBalance(ethers.utils.formatEther(balanceBigNumber));
+      } catch (err: any) {
+        console.error("Failed to fetch contract balance:", err);
+        toast.error("Failed to fetch contract balance: " + err.message);
+        setContractBalance(null); // Atau set ke pesan error
+      }
+    }
+  };
+
+  // useEffect untuk mengambil saldo saat provider berubah (misalnya setelah koneksi wallet)
+  useEffect(() => {
+    if (provider) {
+      fetchContractBalance();
+    }
+  }, [provider]); // Dependensi array dengan provider
 
   const connectWallet = async () => {
     // @ts-ignore
@@ -30,17 +53,19 @@ export default function AdminPage() {
     }
 
     try {
-          // @ts-ignore
+      // @ts-ignore
       const ethProvider = new ethers.providers.Web3Provider(window.ethereum);
       await ethProvider.send("eth_requestAccounts", []);
-      const signer = ethProvider.getSigner();
-      const address = await signer.getAddress();
-      const contractInstance = new ethers.Contract(GameSmartContractAddress, FunQuizABI, signer);
+      const signerInstance = ethProvider.getSigner(); // Ganti nama variabel agar tidak bentrok
+      const address = await signerInstance.getAddress();
+      const contractInstance = new ethers.Contract(GameSmartContractAddress, FunQuizABI, signerInstance);
 
       setProvider(ethProvider);
-      setSigner(signer);
+      setSigner(signerInstance);
       setAccount(address);
       setContract(contractInstance);
+
+      await fetchContractBalance(ethProvider); // Panggil dengan provider yang baru saja dibuat
 
       toast.success("Wallet connected: " + address);
     } catch (err: any) {
@@ -49,7 +74,7 @@ export default function AdminPage() {
   };
 
   const sendNativeToken = async () => {
-    if (!signer || !contract || !transferAmount || isNaN(Number(transferAmount))) {
+    if (!signer || !contract || !transferAmount || isNaN(Number(transferAmount)) || Number(transferAmount) <= 0) {
       toast.error("Invalid input or wallet not connected.");
       return;
     }
@@ -66,6 +91,7 @@ export default function AdminPage() {
       toast.dismiss();
       toast.success(`Sent ${transferAmount} ETH to contract`);
       setTransferAmount("");
+      await fetchContractBalance(); // Update saldo setelah transfer
     } catch (err: any) {
       toast.dismiss();
       toast.error("Transaction failed: " + err.message);
@@ -75,7 +101,7 @@ export default function AdminPage() {
   };
 
   const withdrawNativeToken = async () => {
-    if (!contract || !withdrawAmount || isNaN(Number(withdrawAmount))) {
+    if (!contract || !withdrawAmount || isNaN(Number(withdrawAmount)) || Number(withdrawAmount) <= 0) {
       toast.error("Invalid input or wallet not connected.");
       return;
     }
@@ -84,12 +110,12 @@ export default function AdminPage() {
     toast.loading("Withdrawing tokens...");
     try {
       const tx = await contract.withdrawPartial(ethers.utils.parseEther(withdrawAmount));
-
       await tx.wait();
 
       toast.dismiss();
       toast.success(`Withdrawn ${withdrawAmount} ETH from contract`);
       setWithdrawAmount("");
+      await fetchContractBalance(); // Update saldo setelah penarikan
     } catch (err: any) {
       toast.dismiss();
       toast.error("Withdraw failed: " + err.message);
@@ -119,6 +145,14 @@ export default function AdminPage() {
           </div>
         ) : (
           <>
+            {/* Informasi Saldo Kontrak */}
+            {contractBalance !== null && (
+              <div className="max-w-md mx-auto p-4 mb-6 bg-blue-100 border-l-4 border-blue-500 text-blue-700 rounded-md text-center">
+                <p className="font-bold">Contract Balance (STT):</p>
+                <p className="text-2xl">{parseFloat(contractBalance).toFixed(4)} STT</p>
+              </div>
+            )}
+
             {(!signer || !contract) && (
               <div className="max-w-md mx-auto p-4 mb-6 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 rounded-md">
                 <p className="font-bold">Attention Required</p>
@@ -144,7 +178,7 @@ export default function AdminPage() {
                 />
                 <button
                   onClick={sendNativeToken}
-                  disabled={isFormDisabled}
+                  disabled={isFormDisabled || Number(transferAmount) <= 0}
                   className="w-full bg-green-700 hover:bg-green-600 disabled:opacity-50 text-white py-2 rounded-md font-semibold transition"
                 >
                   {loading ? "Sending..." : "Send Tokens"}
@@ -164,7 +198,7 @@ export default function AdminPage() {
                 />
                 <button
                   onClick={withdrawNativeToken}
-                  disabled={isFormDisabled}
+                  disabled={isFormDisabled || Number(withdrawAmount) <= 0}
                   className="w-full bg-red-700 hover:bg-red-600 disabled:opacity-50 text-white py-2 rounded-md font-semibold transition"
                 >
                   {loading ? "Withdrawing..." : "Withdraw Tokens"}
