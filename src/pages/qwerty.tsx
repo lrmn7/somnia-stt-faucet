@@ -2,15 +2,14 @@ import { useState, useEffect } from "react"; // Impor useEffect
 import { ethers } from "ethers";
 import MainLayout from "@/components/layout/MainLayout";
 import toast from "react-hot-toast";
-import {
-  FUN_QUIZ_CONTRACT_ADDRESS
-} from "@/constants/chain";
+import { FUN_QUIZ_CONTRACT_ADDRESS } from "@/constants/chain";
 import { FunQuizABI } from "@/constants/fun-quiz-abi";
 const GameSmartContractAddress = FUN_QUIZ_CONTRACT_ADDRESS;
 
 export default function AdminPage() {
   const [account, setAccount] = useState<string | null>(null);
-  const [provider, setProvider] = useState<ethers.providers.Web3Provider | null>(null);
+  const [provider, setProvider] =
+    useState<ethers.providers.Web3Provider | null>(null);
   const [signer, setSigner] = useState<ethers.Signer | null>(null);
   const [contract, setContract] = useState<ethers.Contract | null>(null);
 
@@ -24,11 +23,15 @@ export default function AdminPage() {
   const isFormDisabled = loading || !signer || !contract;
 
   // Fungsi untuk mengambil dan mengatur saldo kontrak
-  const fetchContractBalance = async (currentProvider?: ethers.providers.Web3Provider) => {
+  const fetchContractBalance = async (
+    currentProvider?: ethers.providers.Web3Provider
+  ) => {
     const web3Provider = currentProvider || provider; // Gunakan provider yang baru atau yang sudah ada di state
     if (web3Provider && GameSmartContractAddress) {
       try {
-        const balanceBigNumber = await web3Provider.getBalance(GameSmartContractAddress);
+        const balanceBigNumber = await web3Provider.getBalance(
+          GameSmartContractAddress
+        );
         setContractBalance(ethers.utils.formatEther(balanceBigNumber));
       } catch (err: any) {
         console.error("Failed to fetch contract balance:", err);
@@ -56,7 +59,11 @@ export default function AdminPage() {
       await ethProvider.send("eth_requestAccounts", []);
       const signerInstance = ethProvider.getSigner();
       const address = await signerInstance.getAddress();
-      const contractInstance = new ethers.Contract(GameSmartContractAddress, FunQuizABI, signerInstance);
+      const contractInstance = new ethers.Contract(
+        GameSmartContractAddress,
+        FunQuizABI,
+        signerInstance
+      );
 
       setProvider(ethProvider);
       setSigner(signerInstance);
@@ -72,7 +79,13 @@ export default function AdminPage() {
   };
 
   const sendNativeToken = async () => {
-    if (!signer || !contract || !transferAmount || isNaN(Number(transferAmount)) || Number(transferAmount) <= 0) {
+    if (
+      !signer ||
+      !contract ||
+      !transferAmount ||
+      isNaN(Number(transferAmount)) ||
+      Number(transferAmount) <= 0
+    ) {
       toast.error("Invalid input or wallet not connected.");
       return;
     }
@@ -89,7 +102,7 @@ export default function AdminPage() {
       toast.dismiss();
       toast.success(`Sent ${transferAmount} ETH to contract`);
       setTransferAmount("");
-      await fetchContractBalance(); 
+      await fetchContractBalance();
     } catch (err: any) {
       toast.dismiss();
       toast.error("Transaction failed: " + err.message);
@@ -99,7 +112,12 @@ export default function AdminPage() {
   };
 
   const withdrawNativeToken = async () => {
-    if (!contract || !withdrawAmount || isNaN(Number(withdrawAmount)) || Number(withdrawAmount) <= 0) {
+    if (
+      !contract ||
+      !withdrawAmount ||
+      isNaN(Number(withdrawAmount)) ||
+      Number(withdrawAmount) <= 0
+    ) {
       toast.error("Invalid input or wallet not connected.");
       return;
     }
@@ -107,7 +125,9 @@ export default function AdminPage() {
     setLoading(true);
     toast.loading("Withdrawing tokens...");
     try {
-      const tx = await contract.withdrawPartial(ethers.utils.parseEther(withdrawAmount));
+      const tx = await contract.withdrawPartial(
+        ethers.utils.parseEther(withdrawAmount)
+      );
       await tx.wait();
 
       toast.dismiss();
@@ -147,7 +167,9 @@ export default function AdminPage() {
             {contractBalance !== null && (
               <div className="max-w-md mx-auto p-4 mb-6 bg-blue-100 border-l-4 border-blue-500 text-blue-700 rounded-md text-center">
                 <p className="font-bold">Contract Balance (STT):</p>
-                <p className="text-2xl">{parseFloat(contractBalance).toFixed(4)} STT</p>
+                <p className="text-2xl">
+                  {parseFloat(contractBalance).toFixed(4)} STT
+                </p>
               </div>
             )}
 
