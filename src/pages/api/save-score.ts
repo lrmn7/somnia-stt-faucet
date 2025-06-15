@@ -1,11 +1,9 @@
-// pages/api/save-score.ts
 import { MongoClient } from 'mongodb';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 const uri = process.env.NEXT_PUBLIC_MONGODB_URI;
 const dbName = process.env.NEXT_PUBLIC_MONGODB_DB_NAME;
 
-// Ambil daftar wallet owner, dipisahkan dengan koma di .env
 const ownerWallets = (process.env.NEXT_PUBLIC_OWNER_WALLETS || '')
   .toLowerCase()
   .split(',')
@@ -52,8 +50,6 @@ export default async function handler(
   }
 
   const addressLower = address.toLowerCase();
-
-  // ✅ Skip penyimpanan jika wallet adalah milik owner
   if (ownerWallets.includes(addressLower)) {
     console.log(`[SKIP SAVE] Wallet ${addressLower} adalah wallet owner (testing mode)`);
     return res.status(200).json({ message: 'Owner wallet - skipping DB save for testing.' });

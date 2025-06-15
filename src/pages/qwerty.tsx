@@ -33,17 +33,15 @@ export default function AdminPage() {
       } catch (err: any) {
         console.error("Failed to fetch contract balance:", err);
         toast.error("Failed to fetch contract balance: " + err.message);
-        setContractBalance(null); // Atau set ke pesan error
+        setContractBalance(null);
       }
     }
   };
-
-  // useEffect untuk mengambil saldo saat provider berubah (misalnya setelah koneksi wallet)
   useEffect(() => {
     if (provider) {
       fetchContractBalance();
     }
-  }, [provider]); // Dependensi array dengan provider
+  }, [provider]);
 
   const connectWallet = async () => {
     // @ts-ignore
@@ -56,7 +54,7 @@ export default function AdminPage() {
       // @ts-ignore
       const ethProvider = new ethers.providers.Web3Provider(window.ethereum);
       await ethProvider.send("eth_requestAccounts", []);
-      const signerInstance = ethProvider.getSigner(); // Ganti nama variabel agar tidak bentrok
+      const signerInstance = ethProvider.getSigner();
       const address = await signerInstance.getAddress();
       const contractInstance = new ethers.Contract(GameSmartContractAddress, FunQuizABI, signerInstance);
 
@@ -65,7 +63,7 @@ export default function AdminPage() {
       setAccount(address);
       setContract(contractInstance);
 
-      await fetchContractBalance(ethProvider); // Panggil dengan provider yang baru saja dibuat
+      await fetchContractBalance(ethProvider);
 
       toast.success("Wallet connected: " + address);
     } catch (err: any) {
@@ -91,7 +89,7 @@ export default function AdminPage() {
       toast.dismiss();
       toast.success(`Sent ${transferAmount} ETH to contract`);
       setTransferAmount("");
-      await fetchContractBalance(); // Update saldo setelah transfer
+      await fetchContractBalance(); 
     } catch (err: any) {
       toast.dismiss();
       toast.error("Transaction failed: " + err.message);
@@ -115,7 +113,7 @@ export default function AdminPage() {
       toast.dismiss();
       toast.success(`Withdrawn ${withdrawAmount} ETH from contract`);
       setWithdrawAmount("");
-      await fetchContractBalance(); // Update saldo setelah penarikan
+      await fetchContractBalance();
     } catch (err: any) {
       toast.dismiss();
       toast.error("Withdraw failed: " + err.message);

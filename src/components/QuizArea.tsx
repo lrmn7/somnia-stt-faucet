@@ -363,7 +363,7 @@ export default function QuizArea({
                 style={{
                   width: `${
                     ((INTERSTITIAL_COUNTDOWN_SECONDS -
-                      Math.max(0, countdown > 0 ? countdown - 1 : 0)) / // -1 agar progress bar mulai dari 0% saat countdown 3
+                      Math.max(0, countdown > 0 ? countdown - 1 : 0)) /
                       INTERSTITIAL_COUNTDOWN_SECONDS) *
                     100
                   }%`,

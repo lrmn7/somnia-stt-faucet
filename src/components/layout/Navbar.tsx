@@ -18,8 +18,6 @@ const Navbar = () => {
             />
           </a>
         </Link>
-
-        {/* Navigasi tengah */}
         <div className="flex gap-6 items-center justify-center flex-1 sm:ml-8">
           <Link href="/leaderboard" legacyBehavior>
             <a className="text-sm sm:text-xl font-bold text-dark-accent hover:text-dark-accenthover transition-all duration-200 ease-out transform hover:scale-95">

@@ -1,5 +1,3 @@
-// file: pages/create-quiz.tsx
-
 import { NextPage } from "next";
 import Image from "next/image";
 import MainLayout from "@/components/layout/MainLayout";
@@ -20,7 +18,7 @@ const CreateQuizPage: NextPage = () => {
 
       <div className="w-full max-w-sm mx-auto">
         <Image
-          src="/rickroll.gif" // or .png
+          src="/rickroll.gif"
           alt="Coming Soon Illustration"
           width={600}
           height={400}

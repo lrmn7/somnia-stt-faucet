@@ -1,4 +1,3 @@
-// INDEX.TSX
 import { useState, useEffect, useCallback } from "react";
 import { useActiveAccount, useSendTransaction } from "thirdweb/react";
 import { prepareContractCall, toWei } from "thirdweb";
@@ -200,7 +199,6 @@ export default function HomePage() {
     [account, shuffleQuestions]
   );
 
-  // === Claim Reward Function ===
 const handleClaimReward = async () => {
   if (!account || !gameContract) {
     toast.error("Please connect your wallet first.");
@@ -222,18 +220,18 @@ const handleClaimReward = async () => {
         toast.dismiss("claimRewardToast");
         toast.success("Reward claimed successfully!");
         setHasClaimedReward(true);
-        setIsClaimingReward(false); // transaksi berhasil, tombol aktif lagi tapi sudah claimed
+        setIsClaimingReward(false);
       },
       onError: (error) => {
         toast.dismiss("claimRewardToast");
         toast.error(`Claim reward failed: ${error.message.slice(0, 50)}...`);
-        setIsClaimingReward(false); // transaksi gagal/error, tombol diaktifkan supaya user bisa coba lagi
+        setIsClaimingReward(false);
       },
     });
   } catch (error: any) {
     toast.dismiss("claimRewardToast");
     toast.error(`Error: ${error.message}`);
-    setIsClaimingReward(false); // error di prepare transaction, tombol diaktifkan
+    setIsClaimingReward(false);
   }
 };
 
