@@ -73,7 +73,10 @@ const MainLayout = ({
       >
         {children}
       </main>
+      <div>
       <Footer />
+      </div>
+
     </div>
   );
 };
