@@ -11,7 +11,7 @@ import {
   FUN_QUIZ_CONTRACT_ADDRESS,
   THIRDWEB_SECRET_ID,
 } from "@/constants/chain";
-import questionsData from "@/constants/questions.json";
+import questionsData from "@/constants/dummy-questions.json";
 import { FunQuizABI } from "@/constants/fun-quiz-abi";
 
 import MainLayout from "@/components/layout/MainLayout";
