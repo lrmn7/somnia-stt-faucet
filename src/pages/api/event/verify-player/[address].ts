@@ -54,7 +54,7 @@ export default async function handler(
     } else {
       return res.status(200).json({
         wallet: address.toLowerCase(),
-        score: player?.score || 0,
+        score: existingScore?.score || 0,
         completed: false
       });
     }
