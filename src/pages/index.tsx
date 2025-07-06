@@ -269,9 +269,6 @@ const handleClaimReward = async () => {
           currentScore={currentScore}
           onResetGame={resetGame}
           isSavingScore={isSavingScore}
-          onClaimReward={handleClaimReward}
-          isClaimingReward={isClaimingReward}
-          hasClaimedReward={hasClaimedReward}
         />
       )}
     </MainLayout>
