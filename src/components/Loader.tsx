@@ -22,7 +22,6 @@ const Loader: React.FC<Props> = ({ children }) => {
 
   return (
     <div ref={loadingRef} aria-hidden="true" className="bg-[#0e141a]">
-      {/* UBAH warna white-bg jadi dark */}
       <div className="white-bg fixed top-0 left-0 w-full h-screen bg-[#0e141a] z-[9999] flex justify-center items-center">
         <div className="overflow-hidden">
           <span className="loading-text inline-block text-dark-accent text-4xl sm:text-5xl lg:text-7xl tracking-widest">

@@ -6,13 +6,13 @@ export interface ScoreEntry {
   score: number;
   questionsCorrect: number;
   questionsAttempted: number;
-  timestamp: string; 
-  _id?: string; 
+  timestamp: string;
+  _id?: string;
 }
 
 interface LeaderboardProps {
   topScores: ScoreEntry[];
-  error: string | null; 
+  error: string | null;
 }
 
 function formatDate(dateString: string) {

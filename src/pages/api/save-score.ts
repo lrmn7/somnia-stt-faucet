@@ -1,4 +1,3 @@
-// pages/api/save-score.ts
 import { MongoClient } from 'mongodb';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
@@ -47,15 +46,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   const addressLower = address.toLowerCase();
-  const completed = score >= 1000;
-
-  // ❌ Jika skor kurang dari 1000 → langsung tolak & tidak simpan
-  if (!completed) {
-    return res.status(200).json({
-      message: 'Score is below threshold, not saved.',
-      completed: false
-    });
-  }
 
   // ✅ Skip penyimpanan jika wallet adalah milik owner
   if (ownerWallets.includes(addressLower)) {

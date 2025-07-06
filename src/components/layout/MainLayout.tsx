@@ -19,7 +19,7 @@ const MainLayout = ({
   pageTitle = "Fun Quiz",
   pageDescription = "Ready to test what you know about the Somnia Network?",
   pageImage = "/og.png",
-  pageUrl = "https://fun-quiz.vercel.app",
+  pageUrl = "https://funquiz.vercel.app/",
 }: MainLayoutProps) => {
   const router = useRouter();
   const [isMobile, setIsMobile] = useState(false);
@@ -50,21 +50,16 @@ const MainLayout = ({
         <title>{pageTitle}</title>
         <meta name="description" content={pageDescription} />
         <link rel="icon" href="/favicon.ico" />
-
-        {/* Open Graph */}
         <meta property="og:title" content={pageTitle} />
         <meta property="og:description" content={pageDescription} />
         <meta property="og:image" content={pageImage} />
         <meta property="og:url" content={`${pageUrl}${router.asPath}`} />
         <meta property="og:type" content="website" />
-
-        {/* Twitter Card */}
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={pageTitle} />
         <meta name="twitter:description" content={pageDescription} />
         <meta name="twitter:image" content={pageImage} />
       </Head>
-
       <Loader>FUN QUIZ</Loader>
       <Navbar />
       {!isLeaderboardMobile && <SocialLinks />}
@@ -73,7 +68,9 @@ const MainLayout = ({
       >
         {children}
       </main>
+      <div>
       <Footer />
+      </div>
     </div>
   );
 };

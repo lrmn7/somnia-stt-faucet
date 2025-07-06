@@ -1,5 +1,5 @@
-import { MongoClient } from 'mongodb';
-import type { NextApiRequest, NextApiResponse } from 'next';
+import { MongoClient } from "mongodb";
+import type { NextApiRequest, NextApiResponse } from "next";
 
 const uri = process.env.NEXT_PUBLIC_MONGODB_URI;
 const dbName = process.env.NEXT_PUBLIC_MONGODB_DB_NAME;
@@ -13,10 +13,12 @@ async function connectToDatabase() {
   }
 
   if (!uri) {
-    throw new Error('Please define the MONGODB_URI environment variable inside .env.local');
+    throw new Error(
+      "Please define the MONGODB_URI environment variable inside .env.local"
+    );
   }
   if (!dbName) {
-    throw new Error('Please define the MONGODB_DB_NAME environment variable inside .env.local');
+      throw new Error('Please define the MONGODB_DB_NAME environment variable inside .env.local');
   }
 
   const client = new MongoClient(uri);
@@ -33,30 +35,22 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  if (req.method !== 'GET') {
-    res.setHeader('Allow', ['GET']);
+  if (req.method !== "GET") {
+    res.setHeader("Allow", ["GET"]);
     return res.status(405).end(`Method ${req.method} Not Allowed`);
   }
 
   const { address } = req.query;
-
   if (!address || typeof address !== 'string') {
     return res.status(400).json({ error: 'Missing or invalid wallet address' });
   }
 
   try {
     const { db } = await connectToDatabase();
-    const collection = db.collection('quizScores');
-
-    // Find player score
-    const player = await collection.findOne({ address: address.toLowerCase() });
-
-    if (player && player.score >= 1000) {
-      return res.status(200).json({
-        wallet: address.toLowerCase(),
-        score: player.score,
-        completed: true
-      });
+    const collection = db.collection('quizScores'); 
+    const existingScore = await collection.findOne({ address: address.toLowerCase() });
+    if (existingScore) {
+      res.status(200).json({ completed: true });
     } else {
       return res.status(200).json({
         wallet: address.toLowerCase(),
@@ -64,9 +58,8 @@ export default async function handler(
         completed: false
       });
     }
-
   } catch (error: any) {
-    console.error('MongoDB check error:', error);
-    return res.status(500).json({ error: error.message || 'Server error' });
+    console.error('MongoDB check completion error:', error);
+    res.status(500).json({ error: error.message || 'Failed to check quiz completion' });
   }
 }

@@ -62,7 +62,7 @@ export default async function handler(
     const topScores: WithId<QuizScore>[] = await collection
       .find({})
       .sort({ score: -1, createdAt: 1 })
-      .limit(10)
+      .limit(20)
       .toArray();
     const result: LeaderboardEntry[] = topScores.map((doc) => ({
       address: doc.address,
