@@ -32,7 +32,7 @@ const GameStartScreen = ({
       setIsCheckingCompletion(true);
       try {
         const response = await fetch(
-          `/api/check-quiz-completion?address=${walletAddress}`
+          `/api/event/verify-player/${walletAddress}`
         );
         const data = await response.json();
 
