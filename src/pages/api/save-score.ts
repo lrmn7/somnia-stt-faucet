@@ -5,7 +5,6 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 const uri = process.env.NEXT_PUBLIC_MONGODB_URI;
 const dbName = process.env.NEXT_PUBLIC_MONGODB_DB_NAME;
 
-// Ambil daftar wallet owner, dipisahkan dengan koma di .env
 const ownerWallets = (process.env.NEXT_PUBLIC_OWNER_WALLETS || '')
   .toLowerCase()
   .split(',')
@@ -15,16 +14,10 @@ let cachedClient: MongoClient | null = null;
 let cachedDb: any | null = null;
 
 async function connectToDatabase() {
-  if (cachedClient && cachedDb) {
-    return { client: cachedClient, db: cachedDb };
-  }
+  if (cachedClient && cachedDb) return { client: cachedClient, db: cachedDb };
 
-  if (!uri) {
-    throw new Error('Please define the MONGODB_URI environment variable inside .env.local');
-  }
-  if (!dbName) {
-    throw new Error('Please define the MONGODB_DB_NAME environment variable inside .env.local');
-  }
+  if (!uri) throw new Error('Please define the MONGODB_URI env variable');
+  if (!dbName) throw new Error('Please define the MONGODB_DB_NAME env variable');
 
   const client = new MongoClient(uri);
   await client.connect();
@@ -36,10 +29,7 @@ async function connectToDatabase() {
   return { client, db };
 }
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') {
     res.setHeader('Allow', ['POST']);
     return res.status(405).end(`Method ${req.method} Not Allowed`);
@@ -47,16 +37,33 @@ export default async function handler(
 
   const { address, score, questionsCorrect, questionsAttempted } = req.body;
 
-  if (!address || typeof score !== 'number' || typeof questionsCorrect !== 'number' || typeof questionsAttempted !== 'number') {
+  if (
+    !address ||
+    typeof score !== 'number' ||
+    typeof questionsCorrect !== 'number' ||
+    typeof questionsAttempted !== 'number'
+  ) {
     return res.status(400).json({ error: 'Missing or invalid required fields' });
   }
 
   const addressLower = address.toLowerCase();
+  const completed = score >= 1000;
+
+  // ❌ Jika skor kurang dari 1000 → langsung tolak & tidak simpan
+  if (!completed) {
+    return res.status(200).json({
+      message: 'Score is below threshold, not saved.',
+      completed: false
+    });
+  }
 
   // ✅ Skip penyimpanan jika wallet adalah milik owner
   if (ownerWallets.includes(addressLower)) {
     console.log(`[SKIP SAVE] Wallet ${addressLower} adalah wallet owner (testing mode)`);
-    return res.status(200).json({ message: 'Owner wallet - skipping DB save for testing.' });
+    return res.status(200).json({
+      message: 'Owner wallet - skipping DB save for testing.',
+      completed: true
+    });
   }
 
   try {
@@ -74,13 +81,21 @@ export default async function handler(
               score,
               questionsCorrect,
               questionsAttempted,
-              updatedAt: new Date(),
+              updatedAt: new Date()
             }
           }
         );
-        res.status(200).json({ message: 'Score updated successfully', modifiedCount: result.modifiedCount });
+        return res.status(200).json({
+          message: 'Score updated successfully',
+          modifiedCount: result.modifiedCount,
+          completed: true
+        });
       } else {
-        res.status(200).json({ message: 'New score is not higher than existing score', modifiedCount: 0 });
+        return res.status(200).json({
+          message: 'New score is not higher than existing score',
+          modifiedCount: 0,
+          completed: true
+        });
       }
     } else {
       result = await collection.insertOne({
@@ -89,13 +104,17 @@ export default async function handler(
         questionsCorrect,
         questionsAttempted,
         createdAt: new Date(),
-        updatedAt: new Date(),
+        updatedAt: new Date()
       });
-      res.status(201).json({ message: 'New score created successfully', insertedId: result.insertedId });
+      return res.status(201).json({
+        message: 'New score created successfully',
+        insertedId: result.insertedId,
+        completed: true
+      });
     }
 
   } catch (error: any) {
     console.error('MongoDB save score error:', error);
-    res.status(500).json({ error: error.message || 'Failed to save score' });
+    return res.status(500).json({ error: error.message || 'Failed to save score' });
   }
 }

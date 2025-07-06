@@ -17,7 +17,7 @@ contract FunQuiz is Ownable {
 
     uint256 public gameFee = 0.01 ether;
     uint256 public recordFee = 0.0001 ether;
-    uint256 public rewardAmount = 0.5 ether;
+    uint256 public rewardAmount = 0.2 ether;
 
     Counters.Counter private _gameResultIds;
     mapping(uint256 => GameResult) public gameResults;
