@@ -13,12 +13,10 @@ async function connectToDatabase() {
   }
 
   if (!uri) {
-    throw new Error(
-      "Please define the MONGODB_URI environment variable inside .env.local"
-    );
+    throw new Error("Please define the MONGODB_URI environment variable inside .env.local");
   }
   if (!dbName) {
-      throw new Error('Please define the MONGODB_DB_NAME environment variable inside .env.local');
+    throw new Error("Please define the MONGODB_DB_NAME environment variable inside .env.local");
   }
 
   const client = new MongoClient(uri);
@@ -41,25 +39,31 @@ export default async function handler(
   }
 
   const { address } = req.query;
-  if (!address || typeof address !== 'string') {
-    return res.status(400).json({ error: 'Missing or invalid wallet address' });
+
+  if (!address || typeof address !== "string") {
+    return res.status(400).json({ error: "Missing or invalid wallet address" });
   }
 
   try {
     const { db } = await connectToDatabase();
-    const collection = db.collection('quizScores'); 
-    const existingScore = await collection.findOne({ address: address.toLowerCase() });
-    if (existingScore) {
-      res.status(200).json({ completed: true });
+    const collection = db.collection("quizScores");
+    const player = await collection.findOne({ address: address.toLowerCase() });
+
+    if (player) {
+      return res.status(200).json({
+        wallet: address.toLowerCase(),
+        score: player.score,
+        completed: player.score >= 1000, // ✅ misi dianggap selesai kalau score >= 1000
+      });
     } else {
       return res.status(200).json({
         wallet: address.toLowerCase(),
-        score: existingScore?.score || 0,
-        completed: false
+        score: 0,
+        completed: false,
       });
     }
   } catch (error: any) {
-    console.error('MongoDB check completion error:', error);
-    res.status(500).json({ error: error.message || 'Failed to check quiz completion' });
+    console.error("MongoDB check completion error:", error);
+    return res.status(500).json({ error: error.message || "Failed to check quiz completion" });
   }
 }

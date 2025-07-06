@@ -47,7 +47,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   const addressLower = address.toLowerCase();
 
-  // ✅ Skip penyimpanan jika wallet adalah milik owner
   if (ownerWallets.includes(addressLower)) {
     console.log(`[SKIP SAVE] Wallet ${addressLower} adalah wallet owner (testing mode)`);
     return res.status(200).json({

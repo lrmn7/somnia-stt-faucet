@@ -7,7 +7,7 @@ const Navbar = () => {
     <header className="w-full absolute top-0 z-50">
       <div className="max-w-screen-xl mx-auto flex items-center justify-between p-4 sm:p-6">
         {/* Logo kiri */}
-        <Link href="https://x.com/romanromannya" legacyBehavior>
+        <Link href="/" legacyBehavior>
           <a className="flex items-center text-dark-accent hover:text-dark-accent-hover hidden sm:block">
             <Image
               src="/funquiz.png"
