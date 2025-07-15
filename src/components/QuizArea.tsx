@@ -12,7 +12,7 @@ interface QuizAreaProps {
   totalQuestions: number;
 }
 
-const TIME_LIMIT_SECONDS = 10;
+const TIME_LIMIT_SECONDS = 15;
 const INTERSTITIAL_COUNTDOWN_SECONDS = 3;
 
 const shuffleQuestions = (array: Question[]): Question[] => {
@@ -108,7 +108,7 @@ export default function QuizArea({
     }
 
     if (timeLeft === 0) {
-      toast.error("Time's up for this question!", { duration: 1500 });
+      toast.error("Time's up for this question!", { duration: 2000 });
 
       const updatedAttemptCount = questionsAttemptedThisSessionCount + 1;
       setQuestionsAttemptedThisSessionCount(updatedAttemptCount);
@@ -344,7 +344,7 @@ export default function QuizArea({
             {pointsFromLastQuestion !== null && pointsFromLastQuestion > 0 && (
               <div className="my-5 text-center">
                 <p className="text-2xl font-semibold text-green-400 animate-pulse">
-                  +{pointsFromLastQuestion} Poin!
+                  +{pointsFromLastQuestion} Points!
                 </p>
               </div>
             )}
