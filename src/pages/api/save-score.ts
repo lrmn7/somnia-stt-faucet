@@ -1,8 +1,8 @@
 import { MongoClient } from 'mongodb';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-const uri = process.env.NEXT_PUBLIC_MONGODB_URI;
-const dbName = process.env.NEXT_PUBLIC_MONGODB_DB_NAME;
+const uri = process.env.MONGODB_URI;
+const dbName = process.env.MONGODB_DB_NAME;
 
 const ownerWallets = (process.env.NEXT_PUBLIC_OWNER_WALLETS || '')
   .toLowerCase()

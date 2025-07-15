@@ -1,8 +1,8 @@
 import { MongoClient, Db, ObjectId, WithId } from "mongodb";
 import type { NextApiRequest, NextApiResponse } from "next";
 
-const uri = process.env.NEXT_PUBLIC_MONGODB_URI;
-const dbName = process.env.NEXT_PUBLIC_MONGODB_DB_NAME;
+const uri = process.env.MONGODB_URI;
+const dbName = process.env.MONGODB_DB_NAME;
 
 interface QuizScore {
   _id: ObjectId;
