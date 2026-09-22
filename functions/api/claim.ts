@@ -151,7 +151,7 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
 
     console.error('[Claim] Eligibility check error:', err);
     return jsonResponse<ClaimErrorResponse>(
-      { ok: false, code: 'FAUCET_UNAVAILABLE', message: 'The faucet is temporarily unavailable. Please try again later.' },
+      { ok: false, code: 'DATABASE_ERROR', message: err?.message ? `Database error: ${err.message}` : 'The faucet database is temporarily unavailable.' },
       503
     );
   }
@@ -186,7 +186,7 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
       errorCode: 'FAUCET_PRIVATE_KEY_MISSING',
     });
     return jsonResponse<ClaimErrorResponse>(
-      { ok: false, code: 'FAUCET_UNAVAILABLE', message: 'The faucet is temporarily unavailable. Please try again later.' },
+      { ok: false, code: 'FAUCET_PRIVATE_KEY_MISSING', message: 'Faucet treasury private key is not configured in Cloudflare environment variables.' },
       503
     );
   }
@@ -222,7 +222,7 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
         errorCode: 'INSUFFICIENT_TREASURY_BALANCE',
       });
       return jsonResponse<ClaimErrorResponse>(
-        { ok: false, code: 'FAUCET_UNAVAILABLE', message: 'The faucet is temporarily unavailable. Please try again later.' },
+        { ok: false, code: 'INSUFFICIENT_TREASURY_BALANCE', message: 'Faucet treasury wallet has insufficient STT balance.' },
         503
       );
     }
@@ -235,7 +235,7 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
         errorCode: 'CHAIN_ID_MISMATCH',
       });
       return jsonResponse<ClaimErrorResponse>(
-        { ok: false, code: 'FAUCET_UNAVAILABLE', message: 'The faucet is temporarily unavailable. Please try again later.' },
+        { ok: false, code: 'CHAIN_ID_MISMATCH', message: err?.message || 'RPC chain ID mismatch.' },
         503
       );
     }
@@ -247,7 +247,7 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
     });
 
     return jsonResponse<ClaimErrorResponse>(
-      { ok: false, code: 'TRANSACTION_FAILED', message: 'The faucet could not complete the transfer. Try again later.' },
+      { ok: false, code: 'TRANSACTION_FAILED', message: err?.message ? `Transfer failed: ${err.message}` : 'The faucet could not complete the transfer. Try again later.' },
       502
     );
   }
