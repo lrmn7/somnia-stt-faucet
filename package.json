@@ -1,44 +1,58 @@
 {
-  "name": "funquiz-somnia",
-  "version": "0.1.0",
+  "name": "somnia-stt-faucet",
+  "version": "1.0.0",
   "private": true,
-  "description": "A fun quiz app built with Next.js, Web3 integration using Thirdweb, and MongoDB backend",
+  "description": "STT faucet dApp for the Somnia Shannon Testnet built with React, Vite, Tailwind CSS, Cloudflare Pages Functions, and Cloudflare D1.",
   "author": "lrmn7",
   "license": "AGPL-3.0-or-later",
+  "type": "module",
+  "homepage": "https://github.com/lrmn7/somnia-stt-faucet#readme",
   "repository": {
     "type": "git",
-    "url": "https://github.com/lrmn7/funquiz-somnia.git"
+    "url": "git+https://github.com/lrmn7/somnia-stt-faucet.git"
   },
+  "bugs": {
+    "url": "https://github.com/lrmn7/somnia-stt-faucet/issues"
+  },
+  "keywords": [
+    "somnia",
+    "shannon-testnet",
+    "stt-faucet",
+    "faucet",
+    "web3",
+    "evm",
+    "testnet",
+    "cloudflare-pages",
+    "cloudflare-d1",
+    "viem",
+    "turnstile"
+  ],
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit",
+    "pages:dev": "wrangler pages dev dist --d1 DB=somnia-stt-faucet-db --compatibility-date 2024-11-01"
   },
   "dependencies": {
-    "@ethersproject/abi": "^5.8.0",
-    "@ethersproject/providers": "^5.8.0",
-    "@thirdweb-dev/auth": "^4",
-    "@thirdweb-dev/chains": "^0.1.18",
-    "@thirdweb-dev/react": "^4",
-    "@thirdweb-dev/sdk": "^4",
-    "@types/node": "20.2.5",
-    "@types/react": "18.2.8",
-    "@types/react-dom": "18.2.4",
-    "autoprefixer": "10.4.14",
-    "eslint": "8.42.0",
-    "eslint-config-next": "13.4.4",
-    "ethers": "5",
-    "gsap": "^3.13.0",
-    "mongodb": "^6.16.0",
-    "next": "13.4.4",
-    "postcss": "8.4.23",
-    "react": "18.2.0",
-    "react-dom": "18.2.0",
-    "react-hot-toast": "^2.4.1",
-    "react-icons": "^5.5.0",
-    "tailwindcss": "3.3.2",
-    "thirdweb": "^5.99.2",
-    "typescript": "5.1.3"
+    "clsx": "^2.1.1",
+    "lucide-react": "^0.460.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "sonner": "^1.7.1",
+    "tailwind-merge": "^2.5.5",
+    "viem": "^2.21.53"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20241127.0",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^4.3.4",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.15",
+    "typescript": "^5.6.3",
+    "vite": "^6.0.1",
+    "wrangler": "^3.91.0"
   }
 }

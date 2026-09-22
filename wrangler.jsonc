@@ -1,0 +1,26 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "somnia-stt-faucet",
+  "pages_build_output_dir": "./dist",
+  "compatibility_date": "2024-11-01",
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "somnia-stt-faucet",
+      "database_id": "bc4d1d5d-1357-456a-a013-9fb46fb3f979"
+    }
+  ],
+  "vars": {
+    "SOMNIA_RPC_URL": "https://dream-rpc.somnia.network",
+    "CLAIM_AMOUNT_STT": "10",
+    "WALLET_COOLDOWN_SECONDS": "86400",
+    "CLAIM_RESERVATION_TTL_SECONDS": "600",
+    "DAILY_FAUCET_CAP_STT": "1000",
+    "IP_ATTEMPT_LIMIT": "5",
+    "IP_ATTEMPT_WINDOW_SECONDS": "600",
+    "MAX_DAILY_IP_ATTEMPTS": "20"
+  }
+}
