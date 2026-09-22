@@ -137,7 +137,9 @@ export async function verifyClaimEligibility(params: {
       (latestWalletClaim.status === 'submitted' || latestWalletClaim.status === 'confirmed') &&
       latestWalletClaim.eligible_at > now
     ) {
-      throw new Error('ALREADY_CLAIMED');
+      const err = new Error('ALREADY_CLAIMED');
+      (err as any).eligibleAt = latestWalletClaim.eligible_at;
+      throw err;
     }
   }
 

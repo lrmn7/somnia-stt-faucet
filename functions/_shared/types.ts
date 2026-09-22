@@ -31,4 +31,6 @@ export interface ClaimErrorResponse {
   ok: false;
   code: string;
   message: string;
+  eligibleAt?: number;
+  retryAfterSeconds?: number;
 }

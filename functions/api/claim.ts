@@ -122,8 +122,34 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
     }
 
     if (err?.message === 'ALREADY_CLAIMED') {
+      const now = Math.floor(Date.now() / 1000);
+      const remainingSeconds = Math.max(0, (err.eligibleAt || 0) - now);
+      const hours = Math.floor(remainingSeconds / 3600);
+      const minutes = Math.floor((remainingSeconds % 3600) / 60);
+
+      let timeRemaining = '';
+      if (hours > 0 && minutes > 0) {
+        timeRemaining = `in ${hours}h ${minutes}m`;
+      } else if (hours > 0) {
+        timeRemaining = `in ${hours}h`;
+      } else if (minutes > 0) {
+        timeRemaining = `in ${minutes}m`;
+      } else if (remainingSeconds > 0) {
+        timeRemaining = `in ${remainingSeconds}s`;
+      }
+
+      const message = timeRemaining
+        ? `You already claimed 10 STT. You can claim again ${timeRemaining}.`
+        : 'You already claimed 10 STT. Each wallet can claim once every 24 hours.';
+
       return jsonResponse<ClaimErrorResponse>(
-        { ok: false, code: 'ALREADY_CLAIMED', message: 'You already claimed your 10 STT. Try again later.' },
+        {
+          ok: false,
+          code: 'ALREADY_CLAIMED',
+          message,
+          eligibleAt: err.eligibleAt,
+          retryAfterSeconds: remainingSeconds,
+        },
         409
       );
     }
