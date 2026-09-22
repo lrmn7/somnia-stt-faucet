@@ -1,5 +1,6 @@
 import { Env } from '../_shared/types';
 import { SOMNIA_SHANNON_CHAIN_ID } from '../_shared/somnia';
+import { ensureSchema } from '../_shared/db';
 
 export const onRequestGet: PagesFunction<Env> = async (context) => {
   const { env } = context;
@@ -8,6 +9,9 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
   let tablesOk = false;
   let dbError: string | null = null;
   try {
+    if (env.DB) {
+      await ensureSchema(env.DB);
+    }
     const res = await env.DB.prepare('SELECT 1 as alive').first<{ alive: number }>();
     dbOk = res?.alive === 1;
 
