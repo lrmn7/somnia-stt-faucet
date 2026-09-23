@@ -147,7 +147,7 @@ export const FaucetForm: React.FC = () => {
         <span className="text-white/60">Shannon</span>
       </div>
       <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-white mb-3 drop-shadow-[0_4px_24px_rgba(0,0,0,0.9)]">
-        Built with <span className="inline-block whitespace-nowrap"><span className="font-mono text-white font-semibold">&#123;S&#125;</span>omnia</span>
+        Build with <span className="inline-block whitespace-nowrap"><span className="font-mono text-white font-semibold">&#123;S&#125;</span>omnia</span>
       </h1>
       <p className="text-sm sm:text-base text-somnia-300 max-w-2xl mx-auto mb-8 sm:mb-10 font-normal leading-relaxed drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)] sm:whitespace-nowrap">
         Get 10 STT to test, build, and experiment on <span className="inline-block whitespace-nowrap"><span className="font-mono text-white font-semibold">&#123;S&#125;</span>omnia&nbsp;Network.</span>
